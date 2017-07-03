@@ -12,6 +12,11 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.js$/,
+        enforce: 'pre',
+        use: 'source-map-loader'
+      },
+      {
         test: /\.pug$/,
         exclude: /node_modules/,
         use: 'pug-loader'
@@ -19,7 +24,7 @@ module.exports = {
       {
         test: /\.ts$/,
         exclude: '/node_modules/',
-        use: 'ts-loader'
+        use: 'awesome-typescript-loader'
       },
       {
         test: /\.styl$/,
