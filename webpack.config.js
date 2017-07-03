@@ -24,7 +24,22 @@ module.exports = {
       {
         test: /\.styl$/,
         exclude: '/node_modules/',
-        use: ['style-loader', 'css-loader', 'stylus-loader']
+        use: [
+          {
+            loader: 'style-loader'
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+              camelCase: true,
+              sourceMap: true
+            }
+          },
+          {
+            loader: 'stylus-loader'
+          }
+        ]
       }
     ]
   },
