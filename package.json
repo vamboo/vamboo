@@ -1,0 +1,21 @@
+{
+  "name": "vamboo",
+  "version": "0.0.0",
+  "description": "A visual programming language to create GUI apps in functional and reactive way",
+  "main": "src/index.ts",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tock203/vamboo.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tock203/vamboo/issues"
+  },
+  "homepage": "https://github.com/tock203/vamboo#readme"
+}
