@@ -1,0 +1,13 @@
+parser: typescript-eslint-parser
+parserOptions:
+  ecmaVersion: 6
+  sourceType: module
+extends: eslint:recommended
+rules:
+  max-len:
+    - error
+    - 120
+  no-undef: off  # Fails with typescript-eslint-parser
+  no-unused-vars: off
+  no-useless-constructor: off
+  space-infix-ops: off

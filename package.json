@@ -10,6 +10,7 @@
     "autoprefixer": "^7.1.1",
     "awesome-typescript-loader": "^3.2.1",
     "css-loader": "^0.28.4",
+    "eslint": "^4.1.1",
     "html-webpack-plugin": "^2.29.0",
     "poststylus": "^0.2.3",
     "pug": "^2.0.0-rc.2",
@@ -22,6 +23,7 @@
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.1",
     "typescript": "^2.4.1",
+    "typescript-eslint-parser": "^3.0.0",
     "webpack": "^3.0.0",
     "webpack-dev-server": "^2.5.0"
   },
