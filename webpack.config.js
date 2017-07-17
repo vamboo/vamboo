@@ -38,7 +38,9 @@ module.exports = {
             options: {
               modules: true,
               camelCase: true,
-              sourceMap: true
+              sourceMap: true,
+              importLoaders: 1,
+              localIdentName: '[path]___[name]__[local]___[hash:base64:5]'
             }
           },
           {
@@ -47,6 +49,9 @@ module.exports = {
         ]
       }
     ]
+  },
+  resolve: {
+    extensions: ['.ts', '.js', '.styl']
   },
   devtool: 'source-map',
   devServer: {

@@ -6,6 +6,7 @@
   "dependencies": {},
   "devDependencies": {
     "@types/react": "^15.0.34",
+    "@types/react-css-modules": "^4.2.1",
     "@types/react-dom": "^15.5.1",
     "autoprefixer": "^7.1.1",
     "awesome-typescript-loader": "^3.2.1",
@@ -16,6 +17,7 @@
     "pug": "^2.0.0-rc.2",
     "pug-loader": "^2.3.0",
     "react": "^15.6.1",
+    "react-css-modules": "^4.5.2",
     "react-dom": "^15.6.1",
     "react-hyperscript": "^3.0.0",
     "source-map-loader": "^0.2.1",

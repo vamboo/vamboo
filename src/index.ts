@@ -1,8 +1,8 @@
 import * as ReactDOM from 'react-dom'
 import * as h from 'react-hyperscript'
-import * as styles from './index.styl'
+import UnderConstruction from './components/UnderConstruction'
 
 ReactDOM.render(
-  h('h1', {className: styles.bigger}, 'UNDER CONSTRUCTION'),
+  h(UnderConstruction),
   document.querySelector('body > *')
 )
