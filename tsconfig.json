@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",  // react-css-modules needs this to be under es5. See https://github.com/gajus/react-css-modules/issues/196
+    "sourceMap": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "experimentalDecorators": true,
+    "typeRoots": ["./types", "node_modules/@types"]
+  }
+}
