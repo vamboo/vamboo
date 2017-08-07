@@ -53,7 +53,7 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.js', '.styl']
   },
-  devtool: 'source-map',
+  devtool: 'inline-source-map',
   devServer: {
     contentBase: './static'
   },
