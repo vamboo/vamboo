@@ -7,6 +7,6 @@
     "noImplicitAny": true,
     "experimentalDecorators": true,
     "typeRoots": ["./types", "node_modules/@types"],
-    "outDir": "/tmp"
+    "outDir": "dist"
   }
 }

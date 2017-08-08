@@ -29,7 +29,8 @@
     "webpack-dev-server": "^2.5.0"
   },
   "scripts": {
-    "server": "node_modules/.bin/webpack-dev-server"
+    "server": "node_modules/.bin/webpack-dev-server",
+    "test": "tsc && ava"
   },
   "repository": {
     "type": "git",
@@ -40,5 +41,14 @@
   "bugs": {
     "url": "https://github.com/tock203/vamboo/issues"
   },
-  "homepage": "https://github.com/tock203/vamboo#readme"
+  "homepage": "https://github.com/tock203/vamboo#readme",
+  "ava": {
+    "files": [
+      "dist/test/**/*.js"
+    ],
+    "source": [
+      "dist/src/**/*.js"
+    ],
+    "concurrency": 8
+  }
 }
