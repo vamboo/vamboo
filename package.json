@@ -30,7 +30,7 @@
   },
   "scripts": {
     "server": "node_modules/.bin/webpack-dev-server",
-    "test": "tsc && ava"
+    "test": "eslint --ext ts src && tsc && ava"
   },
   "repository": {
     "type": "git",
