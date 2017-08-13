@@ -2,15 +2,16 @@ import Observer from './Observer'
 
 
 export default class Observable<T> {
-  private observers: Observer<T>[]
+  private observers: Observer<T>[] = []
   value: T
 
-  constructor(public initialValue: T) {
+  constructor(initialValue: T) {
     this.value = initialValue
   }
 
   addObserver(observer: Observer<T>) {
     this.observers.push(observer)
+    observer(this)
   }
 
   removeObserver(observer: Observer<T>) {
