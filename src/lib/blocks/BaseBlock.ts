@@ -1,5 +1,7 @@
-import Observable from '../Observable'
 import {ReactElement} from 'react'
+import Observable from '../Observable'
+import Input from '../Input'
+import Output from '../Output'
 
 
 type JSType = object  // ugly
@@ -8,8 +10,8 @@ type JSType = object  // ugly
 export default abstract class BaseBlock {
   static blockName: string  // static property 'name' conflicts with Function.name
 
-  inputs: Input[]
-  outputs: Output[]
+  inputs: Input<any>[]
+  outputs: Output<any>[]
 
   constructor() {  // subclasses must instantiate inputs/outputs here
     this.inputs = []
