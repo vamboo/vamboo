@@ -49,6 +49,7 @@
     "source": [
       "dist/src/**/*.js"
     ],
-    "concurrency": 8
+    "concurrency": 8,
+    "timeout": "1s"
   }
 }
