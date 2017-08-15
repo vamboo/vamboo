@@ -10,6 +10,6 @@ export default class Input<T> {
 
   connect(output: Output<T>) {
     this.output = output
-    output.observable.addObserver(this.block.update.bind(this.block))
+    output.observable.addObserver(this.block.onInputUpdate.bind(this.block))
   }
 }

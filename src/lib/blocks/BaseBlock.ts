@@ -18,7 +18,7 @@ export default abstract class BaseBlock {
     this.outputs = []
   }
 
-  abstract update(): void
+  abstract onInputUpdate(): void
 }
 
 export abstract class GUIBlock extends BaseBlock {

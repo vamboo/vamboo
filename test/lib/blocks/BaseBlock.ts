@@ -14,7 +14,7 @@ class PlusOneBlock extends BaseBlock {
     this.outputs = [new Output<number>('output1', 0)]
   }
 
-  update() {
+  onInputUpdate() {
     this.outputs[0].observable.value = this.inputs[0].output!.observable.value + 1
   }
 }
