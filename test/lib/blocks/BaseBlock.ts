@@ -15,18 +15,16 @@ class PlusOneBlock extends BaseBlock {
   }
 
   update() {
-    this.outputs[0].observable.update(this.inputs[0].output!.observable.value + 1)
+    this.outputs[0].observable.value = this.inputs[0].output!.observable.value + 1
   }
 }
 
 test('chain of update', t => {
   const block1 = new PlusOneBlock
   const block2 = new PlusOneBlock
-  block2.outputs[0].observable.update = sinon.spy()
 
   block2.inputs[0].connect(block1.outputs[0])
-  block1.outputs[0].observable.update(9)
+  block1.outputs[0].observable.value = 9
 
-  t.is((block2.outputs[0].observable.update as any).getCall(0).args[0], 1)
-  t.is((block2.outputs[0].observable.update as any).getCall(1).args[0], 10)
+  t.is(block2.outputs[0].observable.value, 10)
 })

@@ -3,25 +3,32 @@ import Observer from './Observer'
 
 export default class Observable<T> {
   private observers: Observer<T>[] = []
-  value: T
+  private _value: T
 
   constructor(initialValue: T) {
-    this.value = initialValue
+    this._value = initialValue
   }
 
   addObserver(observer: Observer<T>) {
     this.observers.push(observer)
-    observer(this)
   }
 
   removeObserver(observer: Observer<T>) {
     this.observers = this.observers.filter(item => item !== observer)
   }
 
-  update(value: T) {
-    this.value = value
+  notifyObservers() {
     this.observers.forEach(observer => {
       observer(this)
     })
+  }
+
+  get value() {
+    return this._value
+  }
+
+  set value(newValue) {
+    this._value = newValue
+    this.notifyObservers()
   }
 }
