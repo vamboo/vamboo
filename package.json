@@ -8,6 +8,7 @@
     "@types/react": "^15.0.34",
     "@types/react-dom": "^15.5.1",
     "autoprefixer": "^7.1.1",
+    "ava": "^0.21.0",
     "awesome-typescript-loader": "^3.2.1",
     "css-loader": "^0.28.4",
     "eslint": "^4.1.1",
@@ -28,7 +29,8 @@
     "webpack-dev-server": "^2.5.0"
   },
   "scripts": {
-    "server": "node_modules/.bin/webpack-dev-server"
+    "server": "node_modules/.bin/webpack-dev-server",
+    "test": "eslint --ext ts src && tsc && ava"
   },
   "repository": {
     "type": "git",
@@ -39,5 +41,14 @@
   "bugs": {
     "url": "https://github.com/tock203/vamboo/issues"
   },
-  "homepage": "https://github.com/tock203/vamboo#readme"
+  "homepage": "https://github.com/tock203/vamboo#readme",
+  "ava": {
+    "files": [
+      "dist/test/**/*.js"
+    ],
+    "source": [
+      "dist/src/**/*.js"
+    ],
+    "concurrency": 8
+  }
 }
