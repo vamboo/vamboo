@@ -5,12 +5,9 @@
   "main": "src/index.ts",
   "dependencies": {},
   "devDependencies": {
-    "@storybook/cli": "^3.2.9",
-    "@storybook/react": "^3.2.8",
     "@types/react": "^15.6.2",
     "@types/react-dom": "^15.5.1",
     "@types/sinon": "^2.3.3",
-    "@types/storybook__react": "^3.0.5",
     "autoprefixer": "^7.1.1",
     "ava": "^0.21.0",
     "awesome-typescript-loader": "^3.2.1",
@@ -32,16 +29,20 @@
     "webpack": "^3.0.0",
     "webpack-dev-server": "^2.5.0",
     "ts-node": "^3.3.0",
+    "@types/storybook__react": "^3.0.5",
+    "@types/node": "^8.0.25",
+    "@storybook/react": "^3.2.8",
+    "@storybook/cli": "^3.2.9",
     "react-tabs": "^1.1.0",
     "prettier": "^1.6.1",
-    "@types/react-tabs": "^1.0.1",
-    "@types/node": "^8.0.25"
+    "@types/react-tabs": "^1.0.1"
   },
   "scripts": {
     "server": "node_modules/.bin/webpack-dev-server",
     "test": "eslint --ext ts src && tsc && ava",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "repl": "ts-node"
   },
   "repository": {
     "type": "git",
