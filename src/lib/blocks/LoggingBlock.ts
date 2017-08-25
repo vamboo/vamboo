@@ -11,6 +11,6 @@ export default class LoggingBlock extends BaseBlock {
   }
 
   onInputUpdate() {
-    console.log(this.inputs[0].value)
+    console.log('input updated:', this.inputs[0].value)
   }
 }
