@@ -7,13 +7,13 @@ import FunctionBlockList from './FunctionBlockList'
 export default class BlockTabs extends React.Component {
     render() {
         return(
-            h(Tabs, [
-                h(TabList, [
-                    h(Tab, 'GUI'),
-                    h(Tab, 'Function')
+            h(Tabs,{}, [
+                h(TabList,{}, [
+                    h(Tab,{}, 'GUI'),
+                    h(Tab,{}, 'Function')
                 ]),
-                h(TabPanel, [h(GUIBlockList)]),
-                h(TabPanel, [h(FunctionBlockList)])
+                h(TabPanel,{}, [h(GUIBlockList)]),
+                h(TabPanel,{}, [h(FunctionBlockList)])
             ])
         )
     }
