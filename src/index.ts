@@ -1,9 +1,8 @@
 import * as ReactDOM from 'react-dom'
 import * as h from 'react-hyperscript'
-import UnderConstruction from './components/UnderConstruction'
-import BlockList from './components/BlockList/BlockTabs'
+import MainComponent from './components/MainComponent'
 
 ReactDOM.render(
-  h(BlockList),
+  h(MainComponent),
   document.querySelector('body > *')
 )
