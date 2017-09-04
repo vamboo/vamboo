@@ -15,7 +15,7 @@ class PlusOneBlock extends BaseBlock {
   }
 
   onInputUpdate() {
-    this.outputs[0].observable.value = this.inputs[0].output!.observable.value + 1
+    this.outputs[0].value = this.inputs[0].value + 1
   }
 }
 
@@ -24,7 +24,7 @@ test('chain of update', t => {
   const block2 = new PlusOneBlock
 
   block2.inputs[0].connect(block1.outputs[0])
-  block1.outputs[0].observable.value = 9
+  block1.outputs[0].value = 9
 
-  t.is(block2.outputs[0].observable.value, 10)
+  t.is(block2.outputs[0].value, 10)
 })

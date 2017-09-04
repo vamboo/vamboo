@@ -12,4 +12,12 @@ export default class Input<T> {
     this.output = output
     output.observable.addObserver(this.block.onInputUpdate.bind(this.block))
   }
+
+  get value() {
+    return this.output!.value
+  }
+
+  set value(newValue) {
+    this.output!.value = newValue
+  }
 }

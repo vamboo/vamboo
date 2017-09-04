@@ -7,4 +7,12 @@ export default class Output<T> {
   constructor(public name: string, initialValue: T) {
     this.observable = new Observable(initialValue)
   }
+
+  get value() {
+    return this.observable.value
+  }
+
+  set value(newValue) {
+    this.observable.value = newValue
+  }
 }
