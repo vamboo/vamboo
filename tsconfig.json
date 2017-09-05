@@ -2,6 +2,10 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "es2015",
+    "lib": [
+      "dom",
+      "es7"
+    ],
     "sourceMap": true,
     "strictNullChecks": true,
     "noImplicitAny": true,
