@@ -5,6 +5,10 @@ import {default as BaseBlock, FunctionBlock, GUIElementBlock, SourceBlock, SinkB
 export default class BlocksEnvironment {
   private blocks: typeof BaseBlock[] = []
 
+  constructor() {
+    this.register = this.register.bind(this)  // to use it as decorator
+  }
+
   register(block: typeof BaseBlock) {
     this.blocks.push(block)
   }
@@ -22,4 +26,4 @@ export default class BlocksEnvironment {
   }
 }
 
-export const blocksEnvironment = new BlocksEnvironment()
+export const blocksEnvironment = new BlocksEnvironment
