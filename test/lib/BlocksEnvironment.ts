@@ -19,3 +19,21 @@ test('register block', t => {
   blocksEnvironment.register(StubBlock)
   t.deepEqual(blocksEnvironment.getBlocks(), [StubBlock])
 })
+
+test('register block using decorator', t => {
+  const blocksEnvironment = new BlocksEnvironment
+
+  @blocksEnvironment.register
+  class StubBlock2 extends FunctionBlock {
+    static blockName = 'Stub2'
+
+    inputs = []
+    outputs = []
+
+    onInputUpdate() {
+      throw 'not implemented'
+    }
+  }
+
+  t.deepEqual(blocksEnvironment.getBlocks(), [StubBlock2])
+})
