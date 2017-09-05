@@ -2,7 +2,7 @@ import * as _ from 'lodash'
 import {default as BaseBlock, FunctionBlock, GUIElementBlock, SourceBlock, SinkBlock} from './blocks/BaseBlock'
 
 
-class BlocksEnvironment {
+export default class BlocksEnvironment {
   private blocks: typeof BaseBlock[]
 
   register(block: typeof BaseBlock) {
@@ -21,3 +21,5 @@ class BlocksEnvironment {
     return this.blocks.filter(block => Object.getPrototypeOf(block) === blockKind)
   }
 }
+
+export const blocksEnvironment = new BlocksEnvironment()
