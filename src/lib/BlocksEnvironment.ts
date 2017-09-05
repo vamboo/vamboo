@@ -3,7 +3,7 @@ import {default as BaseBlock, FunctionBlock, GUIElementBlock, SourceBlock, SinkB
 
 
 export default class BlocksEnvironment {
-  private blocks: typeof BaseBlock[]
+  private blocks: typeof BaseBlock[] = []
 
   register(block: typeof BaseBlock) {
     this.blocks.push(block)
