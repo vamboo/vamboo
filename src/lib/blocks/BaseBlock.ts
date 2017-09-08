@@ -4,8 +4,6 @@ import Input from '../Input'
 import Output from '../Output'
 
 
-type JSType = object  // ugly
-
 // TypeScript does not support interface which includes static members and instance members...
 export default abstract class BaseBlock {
   static blockName: string  // static property 'name' conflicts with Function.name
