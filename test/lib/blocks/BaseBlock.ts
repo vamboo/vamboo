@@ -1,18 +1,15 @@
 import test from 'ava'
 import * as sinon from 'sinon'
-import BaseBlock from '../../../src/lib/blocks/BaseBlock'
+import {FunctionBlock} from '../../../src/lib/blocks/BaseBlock'
 import Input from '../../../src/lib/Input'
 import Output from '../../../src/lib/Output'
 
 
-class PlusOneBlock extends BaseBlock {
+class PlusOneBlock extends FunctionBlock {
   static blockName = '+1'
 
-  constructor() {
-    super()
-    this.inputs = [new Input<number>('input1', this)]
-    this.outputs = [new Output<number>('output1', 0)]
-  }
+  inputs: Input<number>[] = [new Input<number>('input1', this)]
+  outputs: Output<number>[] = [new Output<number>('output1', 0)]
 
   onInputUpdate() {
     this.outputs[0].value = this.inputs[0].value + 1
