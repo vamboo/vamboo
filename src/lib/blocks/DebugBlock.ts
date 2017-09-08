@@ -4,6 +4,8 @@ import Output from '../Output'
 
 
 export default class DebugBlock extends BaseBlock {
+  static blockName = 'Debug'
+
   inputs: Input<never>[] = []
   outputs: Output<number>[] = [new Output<number>('output1', 0)]
 

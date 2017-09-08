@@ -4,6 +4,8 @@ import Output from '../Output'
 
 
 export default class PlusBlock extends BaseBlock {
+  static blockName = '+'
+
   inputs: Input<number>[] = [new Input<number>('operand1', this), new Input<number>('operand2', this)]
   outputs: Output<number>[] = [new Output<number>('output1', 0)]
 
