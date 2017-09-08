@@ -18,9 +18,7 @@ export default abstract class BaseBlock {
 export abstract class FunctionBlock extends BaseBlock {}
 
 export abstract class GUIElementBlock extends BaseBlock {
-  constructor(private reactElement: ReactElement<any>) {  // call this.reactElement.setState from this.update
-    super()
-  }
+  // TODO
 }
 
 export abstract class SourceBlock extends BaseBlock {
