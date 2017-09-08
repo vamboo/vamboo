@@ -7,6 +7,7 @@ import Output from '../Output'
 // TypeScript does not support interface which includes static members and instance members...
 export default abstract class BaseBlock {
   static blockName: string  // static property 'name' conflicts with Function.name
+  // TypeScript does not support abstract static property...
 
   inputs: Input<any>[]
   outputs: Output<any>[]
