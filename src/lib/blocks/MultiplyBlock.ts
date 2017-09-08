@@ -1,9 +1,9 @@
-import BaseBlock from './BaseBlock'
+import {FunctionBlock} from './BaseBlock'
 import Input from '../Input'
 import Output from '../Output'
 
 
-export default class MultiplyBlock extends BaseBlock {
+export default class MultiplyBlock extends FunctionBlock {
   static blockName = '*'
 
   inputs: Input<number>[] = [new Input<number>('operand1', this), new Input<number>('operand2', this)]

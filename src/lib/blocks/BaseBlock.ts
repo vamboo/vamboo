@@ -15,11 +15,18 @@ export default abstract class BaseBlock {
   abstract onInputUpdate(): void
 }
 
-export abstract class GUIBlock extends BaseBlock {
+export abstract class FunctionBlock extends BaseBlock {}
+
+export abstract class GUIElementBlock extends BaseBlock {
   constructor(private reactElement: ReactElement<any>) {  // call this.reactElement.setState from this.update
     super()
   }
 }
 
-export type FunctionBlock = BaseBlock
-export type SourceBlock = BaseBlock
+export abstract class SourceBlock extends BaseBlock {
+  readonly inputs = []
+}
+
+export abstract class SinkBlock extends BaseBlock {
+  readonly outputs = []
+}
