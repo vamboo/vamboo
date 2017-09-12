@@ -5,6 +5,7 @@
   "main": "src/index.ts",
   "dependencies": {},
   "devDependencies": {
+    "@storybook/cli": "^3.2.9",
     "@types/react": "^15.0.34",
     "@types/react-dom": "^15.5.1",
     "@types/sinon": "^2.3.3",
@@ -28,11 +29,16 @@
     "typescript": "^2.4.1",
     "typescript-eslint-parser": "^3.0.0",
     "webpack": "^3.0.0",
-    "webpack-dev-server": "^2.5.0"
+    "webpack-dev-server": "^2.5.0",
+    "@storybook/react": "^3.2.8",
+    "@storybook/addon-actions": "^3.2.6",
+    "@storybook/addon-links": "^3.2.6"
   },
   "scripts": {
     "server": "node_modules/.bin/webpack-dev-server",
-    "test": "eslint --ext ts src && tsc && ava"
+    "test": "eslint --ext ts src && tsc && ava",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "repository": {
     "type": "git",
