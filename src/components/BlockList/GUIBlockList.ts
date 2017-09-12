@@ -5,12 +5,12 @@ import LabelBlockComponent from "./GUIBlockComponents/LabelBlockComponent";
 
 export default class GUIBlockList extends React.Component {
     render() {
-        return (
+        return(
             h('ul',[
-                h('li', [
+                h('li',[
                     h(LabelBlockComponent)
                 ]),
-                h('li', [
+                h('li',[
                     h(SliderBlockComponent)
                 ])
             ])

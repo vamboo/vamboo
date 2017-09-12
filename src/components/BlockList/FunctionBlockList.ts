@@ -4,17 +4,19 @@ import PlusBlockComponent from './FunctionBlockComponents/PlusBlockComponent'
 import MultiplyBlockComponent from './FunctionBlockComponents/MultiplyBlockComponent'
 import LoggingBlockComponent from './FunctionBlockComponents/LoggingBlockComponent'
 
+//TODO: BlockEnvironmentからブロック一覧を取る
+
 export default class FunctionBlockList extends React.Component {
     render() {
         return(
-            h('ul', [
+            h('ul',[
                 h('li',[
                     h(PlusBlockComponent)
                 ]),
-                h('li', [
+                h('li',[
                     h(MultiplyBlockComponent)
                 ]),
-                h('li', [
+                h('li',[
                     h(LoggingBlockComponent)
                 ])
             ])
