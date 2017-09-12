@@ -6,9 +6,11 @@
   "dependencies": {},
   "devDependencies": {
     "@storybook/cli": "^3.2.9",
-    "@types/react": "^15.0.34",
+    "@storybook/react": "^3.2.8",
+    "@types/react": "^15.6.2",
     "@types/react-dom": "^15.5.1",
     "@types/sinon": "^2.3.3",
+    "@types/storybook__react": "^3.0.5",
     "autoprefixer": "^7.1.1",
     "ava": "^0.21.0",
     "awesome-typescript-loader": "^3.2.1",
@@ -29,10 +31,7 @@
     "typescript": "^2.4.1",
     "typescript-eslint-parser": "^3.0.0",
     "webpack": "^3.0.0",
-    "webpack-dev-server": "^2.5.0",
-    "@storybook/react": "^3.2.8",
-    "@storybook/addon-actions": "^3.2.6",
-    "@storybook/addon-links": "^3.2.6"
+    "webpack-dev-server": "^2.5.0"
   },
   "scripts": {
     "server": "node_modules/.bin/webpack-dev-server",
