@@ -6,6 +6,7 @@ import Output from '../src/lib/Output'
 import BaseBlock from '../src/lib/blocks/BaseBlock'
 import InputProperty from '../src/components/InputProperty'
 import InputProperties from '../src/components/InputProperties'
+import OutputProperties from '../src/components/OutputProperties'
 
 
 class DummyBlock extends BaseBlock {
@@ -29,3 +30,6 @@ storiesOf('InputProperties', module)
     const input2 = new Input<number>('input2', block)
     return h(InputProperties, {inputs: [input1, input2]})
   })
+
+storiesOf('OutputProperties', module)
+  .add('foo', () => h(OutputProperties, {outputs: [new Output('output1', 1), new Output('output2', 2)]}))
