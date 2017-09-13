@@ -30,6 +30,7 @@
     "typescript-eslint-parser": "^3.0.0",
     "webpack": "^3.0.0",
     "webpack-dev-server": "^2.5.0",
+    "prettier": "^1.6.1",
     "@types/storybook__react": "^3.0.5",
     "@storybook/react": "^3.2.8",
     "@storybook/cli": "^3.2.9"
