@@ -1,8 +1,8 @@
 import * as ReactDOM from 'react-dom'
 import * as h from 'react-hyperscript'
-import UnderConstruction from './components/UnderConstruction'
+import MainComponent from './components/MainComponent'
 
 ReactDOM.render(
-  h(UnderConstruction),
+  h(MainComponent),
   document.querySelector('body > *')
 )
