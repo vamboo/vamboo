@@ -4,28 +4,27 @@ import Input from '../Input'
 import Output from '../Output'
 
 
-type JSType = object  // ugly
-
 // TypeScript does not support interface which includes static members and instance members...
 export default abstract class BaseBlock {
   static blockName: string  // static property 'name' conflicts with Function.name
+  // TypeScript does not support abstract static property...
 
-  inputs: Input<any>[]
-  outputs: Output<any>[]
-
-  constructor() {  // subclasses must instantiate inputs/outputs here
-    this.inputs = []
-    this.outputs = []
-  }
+  abstract inputs: Input<any>[]
+  abstract outputs: Output<any>[]
 
   abstract onInputUpdate(): void
 }
 
-export abstract class GUIBlock extends BaseBlock {
-  constructor(private reactElement: ReactElement<any>) {  // call this.reactElement.setState from this.update
-    super()
-  }
+export abstract class FunctionBlock extends BaseBlock {}
+
+export abstract class GUIElementBlock extends BaseBlock {
+  // TODO
 }
 
-export type FunctionBlock = BaseBlock
-export type SourceBlock = BaseBlock
+export abstract class SourceBlock extends BaseBlock {
+  readonly inputs = []
+}
+
+export abstract class SinkBlock extends BaseBlock {
+  readonly outputs = []
+}
