@@ -10,4 +10,5 @@ rules:
   no-undef: off  # Fails with typescript-eslint-parser
   no-unused-vars: off
   no-useless-constructor: off
+  no-console: off
   space-infix-ops: off
