@@ -1,8 +1,10 @@
 import {FunctionBlock} from './BaseBlock'
 import Input from '../Input'
 import Output from '../Output'
+import {blocksEnvironment} from '../BlocksEnvironment'
 
 
+@blocksEnvironment.register
 export default class PlusBlock extends FunctionBlock {
   static blockName = '+'
 
