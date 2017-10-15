@@ -41,4 +41,10 @@ storiesOf('OutputProperties', module)
   .add('foo', () => h(OutputProperties, {outputs: [new Output('output1', 1), new Output('output2', 2)]}))
 
 storiesOf('Properties', module)
-  .add('foo', () => h(Properties, {block: new DummyBlock}))
+  .add('one', () => h(Properties, {block: new DummyBlock}))
+  .add('two', () => h('div', {style: {position: 'relative'}}, [
+    h(Properties, {block: new DummyBlock}),
+    h('div', {style: {position: 'absolute', left: 500}}, [
+      h(Properties, {block: new DummyBlock})
+    ])
+  ]))
