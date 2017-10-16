@@ -2,6 +2,8 @@ import * as React from 'react'
 import * as h from 'react-hyperscript'
 import Input from '../../lib/Input'
 import Output from '../../lib/Output'
+import Point from '../../lib/Point'
+import arrowStore from '../../stores/ArrowStore'
 import * as s from './style.styl'
 
 
@@ -28,7 +30,10 @@ export default class extends React.Component<PropTypes, {isEditable: boolean}> {
   }
 
   render() {
-    return h('li', {className: s.component + (this.state.isEditable ? 'editable' : '')}, [
+    return h('li', {
+      className: s.component + (this.state.isEditable ? 'editable' : ''),
+      onClick: this.onClick.bind(this)
+    }, [
       h('label', [
         this.props.input.name,
         h('input', {type: 'text', onChange: this.onTextBoxChange.bind(this)})
@@ -51,5 +56,12 @@ export default class extends React.Component<PropTypes, {isEditable: boolean}> {
     this.props.input.connect(new Output(null, currentTextBoxValue))
     // valueが変わらない無名Outputを作ってそこにInputを繋げることで定数Inputを実現する
     // Outputのコンストラクタがその名前を引数として取るようにしたのは失敗だったかな...
+  }
+
+  onClick(event: MouseEvent) {
+    // TODO: clientXではなくCanvasのスクロールを考慮した値を使う
+    if (arrowStore.floatingArrow === null) return  // TODO: as any が必要なのいつか直したい...
+
+    arrowStore.finish(new Point(event.clientX, event.clientY), this.props.input)
   }
 }
