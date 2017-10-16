@@ -3,12 +3,15 @@ import {storiesOf} from '@storybook/react';
 import * as h from 'react-hyperscript'
 import Input from '../src/lib/Input'
 import Output from '../src/lib/Output'
+import Point from '../src/lib/Point'
 import BaseBlock from '../src/lib/blocks/BaseBlock'
+import blockStore from '../src/stores/BlockStore'
 import InputProperty from '../src/components/InputProperty'
 import InputProperties from '../src/components/InputProperties'
 import OutputProperties from '../src/components/OutputProperties'
 import Properties from '../src/components/Properties'
 import Arrows from '../src/components/Arrows'
+import Canvas from '../src/components/Canvas'
 
 
 class DummyBlock extends BaseBlock {
@@ -41,21 +44,12 @@ storiesOf('InputProperties', module)
 storiesOf('OutputProperties', module)
   .add('foo', () => h(OutputProperties, {outputs: [new Output('output1', 1), new Output('output2', 2)]}))
 
-const TwoProperties = () => h('div', [
-  h(Properties, {block: new DummyBlock}),
-  h('div', {style: {position: 'absolute', left: 500}}, [
-    h(Properties, {block: new DummyBlock})
-  ])
-])
-
 storiesOf('Properties', module)
-  .add('one', () => h(Properties, {block: new DummyBlock}))
-  .add('two', () => h(TwoProperties))
+  .add('foo', () => h(Properties, {block: new DummyBlock}))
 
-storiesOf('Arrows', module)
-  .add('hoge', () => h('div', [
-    h(TwoProperties),
-    h('div', {style: {'pointer-events': 'none', position: 'absolute', top: 0, left: 0}}, [
-      h(Arrows)
-    ])
-  ]))
+storiesOf('Canvas', module)
+  .add('foo', () => {
+    blockStore.placeBlock(new Point(0, 0), new DummyBlock)
+    blockStore.placeBlock(new Point(500, 200), new DummyBlock)
+    return h(Canvas)
+  })
