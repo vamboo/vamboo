@@ -8,6 +8,7 @@ import InputProperty from '../src/components/InputProperty'
 import InputProperties from '../src/components/InputProperties'
 import OutputProperties from '../src/components/OutputProperties'
 import Properties from '../src/components/Properties'
+import Arrows from '../src/components/Arrows'
 
 
 class DummyBlock extends BaseBlock {
@@ -40,11 +41,21 @@ storiesOf('InputProperties', module)
 storiesOf('OutputProperties', module)
   .add('foo', () => h(OutputProperties, {outputs: [new Output('output1', 1), new Output('output2', 2)]}))
 
+const TwoProperties = () => h('div', [
+  h(Properties, {block: new DummyBlock}),
+  h('div', {style: {position: 'absolute', left: 500}}, [
+    h(Properties, {block: new DummyBlock})
+  ])
+])
+
 storiesOf('Properties', module)
   .add('one', () => h(Properties, {block: new DummyBlock}))
-  .add('two', () => h('div', {style: {position: 'relative'}}, [
-    h(Properties, {block: new DummyBlock}),
-    h('div', {style: {position: 'absolute', left: 500}}, [
-      h(Properties, {block: new DummyBlock})
+  .add('two', () => h(TwoProperties))
+
+storiesOf('Arrows', module)
+  .add('hoge', () => h('div', [
+    h(TwoProperties),
+    h('div', {style: {'pointer-events': 'none', position: 'absolute', top: 0, left: 0}}, [
+      h(Arrows)
     ])
   ]))
