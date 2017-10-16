@@ -1,11 +1,7 @@
 import BaseStore from './BaseStore'
 import Input from '../lib/Input'
 import Output from '../lib/Output'
-
-
-class Point {
-  constructor(public x: number, public y: number) {}
-}
+import Point from '../lib/Point'
 
 class Arrow {
   constructor(public start: Point, public end: Point) {}
