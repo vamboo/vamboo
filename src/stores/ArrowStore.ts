@@ -3,6 +3,7 @@ import Input from '../lib/Input'
 import Output from '../lib/Output'
 import Point from '../lib/Point'
 
+
 class Arrow {
   constructor(public start: Point, public end: Point) {}
 }
@@ -12,12 +13,12 @@ class FloatingArrow {
 }
 
 class ArrowStore extends BaseStore {
-  static initialState: {
-    placedArrows: Arrow[],
-    floatingArrow: FloatingArrow | null
-  } = {
-    placedArrows: [],
-    floatingArrow: null
+  placedArrows: Arrow[] = []
+  floatingArrow: FloatingArrow | null = null
+
+  constructor() {
+    super()
+    this.configure()
   }
 
   start(this: any, startsFrom: Point, output: Output<any>) {
@@ -30,9 +31,10 @@ class ArrowStore extends BaseStore {
     input.connect(this.floatingArrow!.output)
     this.placedArrows = this.placedArrows.concat([new Arrow(this.floatingArrow!.startsFrom, endsAt)])
     this.floatingArrow = null
+    // TODO: ここで二回Store#notify()が呼ばれてしまうのをどうにかする
 
     console.log('finish', this.placedArrows)
   }
 }
 
-export default new ArrowStore
+export default new ArrowStore as any

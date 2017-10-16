@@ -1,22 +1,22 @@
 import * as _ from 'lodash'
 
 
-export default class Store {
-  static initialState: {[key: string]: any} = {}
+// TODO: この状態管理機構にタイムトラベルデバッギング機能とか付けて売り出す
+
+export default class BaseStore {
   private state: {[key: string]: any} = {}
   private subscribers: (() => void)[] = []
 
-  constructor() {
-    if (_.isEqual((this.constructor as typeof Store).initialState, {})) {
-      console.error('You must define initialState')
-    }
+  configure() {
+    const stateNames = _.difference(Object.keys(this), Object.keys(new BaseStore))
 
-    Object.keys((this.constructor as typeof Store).initialState).forEach(key => {
-      this.state[key] = (this.constructor as typeof Store).initialState[key]
-      Object.defineProperty(this, key, {
-        get: () => this.state[key],
+    stateNames.forEach(stateName => {
+      this.state[stateName] = (this as {[key: string]: any})[stateName]
+
+      Object.defineProperty(this, stateName, {
+        get: () => this.state[stateName],
         set: (value: any) => {
-          this.state[key] = value
+          this.state[stateName] = value
           this.notify()
         }
       })
