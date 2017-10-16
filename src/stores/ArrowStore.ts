@@ -24,18 +24,18 @@ class ArrowStore extends BaseStore {
     floatingArrow: null
   }
 
-  start(startsFrom: Point, output: Output<any>) {
-    (this as any).floatingArrow = new FloatingArrow(startsFrom, output)
+  start(this: any, startsFrom: Point, output: Output<any>) {
+    this.floatingArrow = new FloatingArrow(startsFrom, output)
   }
 
-  finish(endsAt: Point, input: Input<any>) {
-    console.assert((this as any).floatingArrow !== null)
+  finish(this: any, endsAt: Point, input: Input<any>) {
+    console.assert(this.floatingArrow !== null)
 
-    (input as any).connect((this as any).floatingArrow!.output)
-    (this as any).placedArrows = (this as any).placedArrows.concat([new Arrow((this as any).floatingArrow!.startsFrom, endsAt)])
-    (this as any).floatingArrow = null
+    input.connect(this.floatingArrow!.output)
+    this.placedArrows = this.placedArrows.concat([new Arrow(this.floatingArrow!.startsFrom, endsAt)])
+    this.floatingArrow = null
 
-    console.log('finish', (this as any).placedArrows)
+    console.log('finish', this.placedArrows)
   }
 }
 
