@@ -21,11 +21,11 @@ class ArrowStore extends BaseStore {
     this.configure()
   }
 
-  start(this: any, startsFrom: Point, output: Output<any>) {
+  start(startsFrom: Point, output: Output<any>) {
     this.floatingArrow = new FloatingArrow(startsFrom, output)
   }
 
-  finish(this: any, endsAt: Point, input: Input<any>) {
+  finish(endsAt: Point, input: Input<any>) {
     console.assert(this.floatingArrow !== null)
 
     input.connect(this.floatingArrow!.output)
@@ -37,4 +37,4 @@ class ArrowStore extends BaseStore {
   }
 }
 
-export default new ArrowStore as any
+export default new ArrowStore

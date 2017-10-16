@@ -60,7 +60,7 @@ export default class extends React.Component<PropTypes, {isEditable: boolean}> {
 
   onClick(event: MouseEvent) {
     // TODO: clientXではなくCanvasのスクロールを考慮した値を使う
-    if ((arrowStore as any).floatingArrow === null) return  // TODO: as any が必要なのいつか直したい...
+    if (arrowStore.floatingArrow === null) return  // TODO: as any が必要なのいつか直したい...
 
     arrowStore.finish(new Point(event.clientX, event.clientY), this.props.input)
   }
