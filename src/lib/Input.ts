@@ -6,23 +6,36 @@ import BaseBlock from './blocks/BaseBlock'
 
 export default class Input<T> {
   connectionSubscription: Subscription<Output<T> | null> = new Subscription(null)
+  valueSubscription: Subscription<T | null> = new Subscription(null)
+  // プログラムを組み立て、シリアライズし、それを走らせる、
+  // という分離をちゃんとやっていればこんな複雑なSubscription同士の結びつきは起こらなかった...
 
   constructor(public name: string, public block: BaseBlock) {}
 
-  connect(output: Output<T>) {
-    this.connectionSubscription.value = output
-    output.subscription.subscribe(this.block.onInputUpdate.bind(this.block))
+  connect(newOutput: Output<T>) {
+    if (this.output !== null) {
+      this.output.valueSubscription.unsubscribe(this.updateValue)
+    }
+
+    this.output = newOutput
+    this.output.valueSubscription.subscribe(this.updateValue)
   }
 
-  get output(): Output<T> | null {
+  get value(): T | null {
+    if (this.output === null) return null  // When this Input is not connected to any Output
+
+    return this.output.value
+  }
+
+  private get output(): Output<T> | null {
     return this.connectionSubscription.value
   }
 
-  get value() {
-    return this.output!.value
+  private set output(output: Output<T> | null) {
+    this.connectionSubscription.value = output
   }
 
-  set value(newValue) {
-    this.output!.value = newValue
+  private updateValue = (outputValueSubscription: Subscription<T>) => {
+    this.valueSubscription.value = outputValueSubscription.value
   }
 }

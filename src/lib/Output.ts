@@ -2,17 +2,17 @@ import Subscription from './Subscription'
 
 
 export default class Output<T> {
-  subscription: Subscription<T>
+  valueSubscription: Subscription<T>
 
   constructor(public name: string | null, initialValue: T) {
-    this.subscription = new Subscription(initialValue)
+    this.valueSubscription = new Subscription(initialValue)
   }
 
   get value() {
-    return this.subscription.value
+    return this.valueSubscription.value
   }
 
   set value(newValue) {
-    this.subscription.value = newValue
+    this.valueSubscription.value = newValue
   }
 }

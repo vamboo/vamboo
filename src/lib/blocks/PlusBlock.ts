@@ -12,6 +12,6 @@ export default class PlusBlock extends FunctionBlock {
   outputs: Output<number>[] = [new Output<number>('output1', 0)]
 
   onInputUpdate() {
-    this.outputs[0].value = this.inputs[0].value + this.inputs[1].value
+    this.outputs[0].value = this.inputs[0].value! + this.inputs[1].value!
   }
 }
