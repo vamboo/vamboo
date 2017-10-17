@@ -1,8 +1,8 @@
 import * as ReactDOM from 'react-dom'
 import * as h from 'react-hyperscript'
-import MainComponent from './components/MainComponent'
+import App from './components/App'
 
 ReactDOM.render(
-  h(MainComponent),
+  h(App),
   document.querySelector('body > *')
 )
