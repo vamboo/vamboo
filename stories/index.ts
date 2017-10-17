@@ -5,6 +5,7 @@ import Input from '../src/lib/Input'
 import Output from '../src/lib/Output'
 import Point from '../src/lib/Point'
 import BaseBlock from '../src/lib/blocks/BaseBlock'
+import SliderBlock from '../src/lib/blocks/SliderBlock'
 import blockStore from '../src/stores/BlockStore'
 import InputProperty from '../src/components/InputProperty'
 import InputProperties from '../src/components/InputProperties'
@@ -49,7 +50,13 @@ storiesOf('Properties', module)
 
 storiesOf('Canvas', module)
   .add('foo', () => {
+    blockStore.clear()
     blockStore.placeBlock(new Point(0, 0), new DummyBlock)
     blockStore.placeBlock(new Point(500, 200), new DummyBlock)
+    return h(Canvas)
+  })
+  .add('slider', () => {
+    blockStore.clear()
+    blockStore.placeBlock(new Point(0, 0), new SliderBlock)
     return h(Canvas)
   })
