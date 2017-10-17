@@ -30,6 +30,7 @@
     "react-dom": "^15.6.1",
     "react-hyperscript": "^3.0.0",
     "react-tabs": "^1.1.0",
+    "sinon": "^4.0.1",
     "source-map-loader": "^0.2.1",
     "style-loader": "^0.18.2",
     "stylus": "^0.54.5",

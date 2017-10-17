@@ -1,26 +1,26 @@
 import test from 'ava'
 import * as sinon from 'sinon'
-import Observable from '../../src/lib/Observable'
+import Subscription from '../../src/lib/Subscription'
 
 
 test('initial value', t => {
-  const observable = new Observable(1)
+  const observable = new Subscription(1)
   t.is(observable.value, 1)
 })
 
 test('update value', t => {
-  const observable = new Observable(1)
+  const observable = new Subscription(1)
   observable.value = 2
   t.is(observable.value, 2)
 })
 
 test('call observers on update', t => {
-  const observable = new Observable(1)
+  const observable = new Subscription(1)
 
   const observer1 = sinon.spy()
-  observable.addObserver(observer1)
+  observable.subscribe(observer1)
   const observer2 = sinon.spy()
-  observable.addObserver(observer2)
+  observable.subscribe(observer2)
 
   observable.value = 2
   t.is(observer1.lastCall.args[0].value, 2)
@@ -28,10 +28,10 @@ test('call observers on update', t => {
 })
 
 test('notify current value', t => {
-  const observable = new Observable(1)
+  const observable = new Subscription(1)
   const observer = sinon.spy()
-  observable.addObserver(observer)
+  observable.subscribe(observer)
 
-  observable.notifyObservers()
+  observable.notify()
   t.is(observer.lastCall.args[0].value, 1)
 })
