@@ -8,18 +8,14 @@ import * as s from './style.styl'
 
 
 export default class extends React.Component {
-  constructor() {
-    super()
-
-    this.forceUpdate = this.forceUpdate.bind(this)
-  }
+  rerender = () => this.forceUpdate()
 
   componentDidMount() {
-    arrowStore.subscribe(this.forceUpdate)
+    arrowStore.subscribe(this.rerender)
   }
 
   componentWillUnmount() {
-    arrowStore.unsubscribe(this.forceUpdate)
+    arrowStore.unsubscribe(this.rerender)
   }
 
   render() {

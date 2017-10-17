@@ -7,17 +7,14 @@ import * as s from './style.styl'
 
 
 export default class extends React.Component {
-  constructor() {
-    super()
-    this.forceUpdate = this.forceUpdate.bind(this)
-  }
+  rerender = () => this.forceUpdate()
 
   componentDidMount() {
-    blockStore.subscribe(this.forceUpdate)
+    blockStore.subscribe(this.rerender)
   }
 
   componentWillUnmount() {
-    blockStore.unsubscribe(this.forceUpdate)
+    blockStore.unsubscribe(this.rerender)
   }
 
   render() {
