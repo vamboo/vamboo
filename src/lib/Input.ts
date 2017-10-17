@@ -1,21 +1,21 @@
-import Observer from './Observer'
+import Subscription from './Subscription'
+import Subscriber from './Subscriber'
 import Output from './Output'
 import BaseBlock from './blocks/BaseBlock'
-import Observable from './Observable'
 
 
 export default class Input<T> {
-  connectionObservable: Observable<Output<T> | null> = new Observable(null)
+  connectionSubscription: Subscription<Output<T> | null> = new Subscription(null)
 
   constructor(public name: string, public block: BaseBlock) {}
 
   connect(output: Output<T>) {
-    this.connectionObservable.value = output
-    output.observable.addObserver(this.block.onInputUpdate.bind(this.block))
+    this.connectionSubscription.value = output
+    output.subscription.subscribe(this.block.onInputUpdate.bind(this.block))
   }
 
   get output(): Output<T> | null {
-    return this.connectionObservable.value
+    return this.connectionSubscription.value
   }
 
   get value() {

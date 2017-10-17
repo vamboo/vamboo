@@ -1,5 +1,5 @@
 import * as React from 'react'
-import Observable from '../Observable'
+import Subscription from '../Subscription'
 import Input from '../Input'
 import Output from '../Output'
 

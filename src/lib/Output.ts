@@ -1,18 +1,18 @@
-import Observable from './Observable'
+import Subscription from './Subscription'
 
 
 export default class Output<T> {
-  observable: Observable<T>
+  subscription: Subscription<T>
 
   constructor(public name: string | null, initialValue: T) {
-    this.observable = new Observable(initialValue)
+    this.subscription = new Subscription(initialValue)
   }
 
   get value() {
-    return this.observable.value
+    return this.subscription.value
   }
 
   set value(newValue) {
-    this.observable.value = newValue
+    this.subscription.value = newValue
   }
 }
