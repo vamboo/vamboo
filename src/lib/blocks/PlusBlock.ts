@@ -8,8 +8,8 @@ import {blocksEnvironment} from '../BlocksEnvironment'
 export default class PlusBlock extends FunctionBlock {
   static blockName = '+'
 
-  inputs: Input<number>[] = [new Input<number>('operand1', this), new Input<number>('operand2', this)]
-  outputs: Output<number>[] = [new Output<number>('output1', 0)]
+  inputs: Input<number>[] = [new Input<number>('値1', this), new Input<number>('値2', this)]
+  outputs: Output<number>[] = [new Output<number>('結果', 0)]
 
   constructor() {
     super()
