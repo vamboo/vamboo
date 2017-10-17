@@ -9,8 +9,4 @@ export default class DebugBlock extends SourceBlock {
   static blockName = 'Debug'
 
   outputs: Output<number>[] = [new Output<number>('output1', 0)]
-
-  onInputUpdate() {
-    throw 'not implemented'
-  }
 }

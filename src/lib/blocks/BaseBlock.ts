@@ -12,7 +12,13 @@ export default abstract class BaseBlock {
   abstract inputs: Input<any>[]
   abstract outputs: Output<any>[]
 
-  abstract onInputUpdate(): void
+  protected configure() {
+    this.inputs.forEach(input => {
+      input.valueSubscription.subscribe(this.onInputUpdate.bind(this))
+    })
+  }
+
+  protected onInputUpdate() {}
 }
 
 export abstract class FunctionBlock extends BaseBlock {}
