@@ -45,7 +45,11 @@ module.exports = {
             options: {
               modules: true,
               camelCase: true,
-              sourceMap: true
+              sourceMap: true,
+              getLocalIdent: ({resourcePath}, _, className) => {
+                const relativeFilePath = resourcePath.replace(`${__dirname}/`, '')
+                return `${relativeFilePath}/${className}`
+              }
             }
           },
           {
