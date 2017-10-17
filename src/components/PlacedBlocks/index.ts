@@ -2,7 +2,7 @@ import * as React from 'react'
 import * as h from 'react-hyperscript'
 import Point from '../../lib/Point'
 import blockStore from '../../stores/BlockStore'
-import Properties from '../Properties'
+import PlacedBlock from '../PlacedBlock'
 import * as s from './style.styl'
 
 
@@ -23,7 +23,7 @@ export default class extends React.Component {
   render() {
     return h('div', {className: s.component}, Array.from(blockStore.blocks).map(
       ([pos, block]) => h('div', {style: {left: pos.x, top: pos.y}}, [
-        h(Properties, {block})  // TODO: PlacedBlockで置き換え
+        h(PlacedBlock, {block})
       ])
     ))
   }

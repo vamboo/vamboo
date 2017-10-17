@@ -26,6 +26,10 @@ class BlockStore extends BaseStore {
 
     this.blocks = remaningBlocks
   }
+
+  clear() {
+    this.blocks = new Map
+  }
 }
 
 export default new BlockStore
