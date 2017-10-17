@@ -9,6 +9,12 @@ export default class LoggingBlock extends SinkBlock {
 
   inputs: Input<number>[] = [new Input<number>('input1', this)]
 
+  constructor() {
+    super()
+
+    this.configure()
+  }
+
   onInputUpdate() {
     console.log('input updated:', this.inputs[0].value)
   }

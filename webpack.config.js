@@ -27,6 +27,10 @@ module.exports = {
         use: 'awesome-typescript-loader'
       },
       {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
+      },
+      {
         test: /\.styl$/,
         exclude: '/node_modules/',
         use: [
@@ -41,7 +45,11 @@ module.exports = {
             options: {
               modules: true,
               camelCase: true,
-              sourceMap: true
+              sourceMap: true,
+              getLocalIdent: ({resourcePath}, _, className) => {
+                const relativeFilePath = resourcePath.replace(`${__dirname}/`, '')
+                return `${relativeFilePath}/${className}`
+              }
             }
           },
           {
@@ -52,7 +60,7 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ['.ts', '.js', '.styl']
+    extensions: ['.ts', '.js', '.styl', '.css']
   },
   devtool: 'inline-source-map',
   devServer: {

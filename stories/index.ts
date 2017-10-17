@@ -20,8 +20,6 @@ class DummyBlock extends BaseBlock {
 
   inputs: Input<number>[] = [new Input<number>('input1', this), new Input<number>('input2', this)]
   outputs = [new Output<number>('output1', 1)]
-
-  onInputUpdate() {}
 }
 
 

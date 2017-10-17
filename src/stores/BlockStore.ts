@@ -1,10 +1,18 @@
 import Point from '../lib/Point'
 import BaseBlock from '../lib/blocks/BaseBlock'
+import SliderBlock from '../lib/blocks/SliderBlock'
+import LabelBlock from '../lib/blocks/LabelBlock'
+import PlusBlock from '../lib/blocks/PlusBlock'
 import BaseStore from './BaseStore'
 
 
 class BlockStore extends BaseStore {
-  blocks: Map<Point, BaseBlock> = new Map
+  blocks = new Map<Point, BaseBlock>([
+    [new Point(0, 0), new SliderBlock],
+    [new Point(0, 300), new SliderBlock],
+    [new Point(400, 0), new PlusBlock],
+    [new Point(800, 0), new LabelBlock]
+  ])
 
   constructor() {
     super()

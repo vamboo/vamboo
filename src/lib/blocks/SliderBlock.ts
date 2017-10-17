@@ -9,6 +9,4 @@ export default class extends GUIElementBlock {
 
   inputs = []
   outputs = [new Output('値', 50)]
-
-  onInputUpdate() {}  // これBaseBlockのデフォルト実装にしといたほうが良いかな
 }

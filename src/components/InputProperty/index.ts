@@ -15,18 +15,18 @@ export default class extends React.Component<PropTypes, {isEditable: boolean}> {
   constructor(props: PropTypes) {
     super(props)
     this.state = {
-      isEditable: props.input.connectionObservable.value === null
+      isEditable: props.input.connectionSubscription.value === null
     }
 
     this.onConnectionChange = this.onConnectionChange.bind(this)
   }
 
   componentDidMount() {
-    this.props.input.connectionObservable.addObserver(this.onConnectionChange)
+    this.props.input.connectionSubscription.subscribe(this.onConnectionChange)
   }
 
   componentWillUnmount() {
-    this.props.input.connectionObservable.removeObserver(this.onConnectionChange)
+    this.props.input.connectionSubscription.unsubscribe(this.onConnectionChange)
   }
 
   render() {
@@ -44,8 +44,8 @@ export default class extends React.Component<PropTypes, {isEditable: boolean}> {
   onConnectionChange() {
     this.setState({
       isEditable:
-        this.props.input.connectionObservable.value === null
-        || this.props.input.connectionObservable.value.name === null
+        this.props.input.connectionSubscription.value === null
+        || this.props.input.connectionSubscription.value.name === null
     })
   }
 

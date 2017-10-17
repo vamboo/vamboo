@@ -4,18 +4,14 @@ import arrowStore from '../../stores/ArrowStore'
 
 
 export default class extends React.Component {
-  constructor() {
-    super()
-
-    this.forceUpdate = this.forceUpdate.bind(this)
-  }
+  rerender = () => this.forceUpdate()
 
   componentDidMount() {  // TODO: 毎回書くのは面倒なのでStoreBindedComponentみたいな基底クラス作る
-    arrowStore.subscribe(this.forceUpdate)
+    arrowStore.subscribe(this.rerender)
   }
 
   componentWillUnmount() {
-    arrowStore.unsubscribe(this.forceUpdate)
+    arrowStore.unsubscribe(this.rerender)
   }
 
   render() {

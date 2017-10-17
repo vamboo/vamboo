@@ -11,8 +11,14 @@ class PlusOneBlock extends FunctionBlock {
   inputs: Input<number>[] = [new Input<number>('input1', this)]
   outputs: Output<number>[] = [new Output<number>('output1', 0)]
 
+  constructor() {
+    super()
+
+    this.configure()
+  }
+
   onInputUpdate() {
-    this.outputs[0].value = this.inputs[0].value + 1
+    this.outputs[0].value = this.inputs[0].value! + 1
   }
 }
 
