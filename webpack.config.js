@@ -27,6 +27,10 @@ module.exports = {
         use: 'awesome-typescript-loader'
       },
       {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader']
+      },
+      {
         test: /\.styl$/,
         exclude: '/node_modules/',
         use: [
@@ -52,7 +56,7 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ['.ts', '.js', '.styl']
+    extensions: ['.ts', '.js', '.styl', '.css']
   },
   devtool: 'inline-source-map',
   devServer: {
