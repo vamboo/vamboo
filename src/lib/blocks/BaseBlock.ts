@@ -1,4 +1,4 @@
-import {ReactElement} from 'react'
+import * as React from 'react'
 import Observable from '../Observable'
 import Input from '../Input'
 import Output from '../Output'
@@ -18,7 +18,7 @@ export default abstract class BaseBlock {
 export abstract class FunctionBlock extends BaseBlock {}
 
 export abstract class GUIElementBlock extends BaseBlock {
-  // TODO
+  static reactComponent: React.ComponentClass
 }
 
 export abstract class SourceBlock extends BaseBlock {
