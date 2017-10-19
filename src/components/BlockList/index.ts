@@ -1,7 +1,8 @@
 import * as React from 'react'
 import * as h from 'react-hyperscript'
 import * as _ from 'lodash'
-import {BlockKinds} from '../../lib/blocks/BaseBlock'
+import {BlockClass, BlockKinds} from '../../lib/blocks/BaseBlock'
+import blockStore from '../../stores/BlockStore'
 import blocksEnvironmentStore from '../../stores/BlocksEnvironmentStore'
 import * as s from './style.styl'
 
@@ -39,7 +40,7 @@ export default class BlockList extends React.Component<{}, StateTypes> {
         ])
       )),
       h('ul', blocksEnvironmentStore.getBlockClasses(this.state.selectedKind).map(
-        blockClass => h('li', blockClass.blockName)
+        blockClass => h('li', {onClick: () => this.onBlockClick(blockClass)}, blockClass.blockName)
       ))
     ])
   }
@@ -48,5 +49,9 @@ export default class BlockList extends React.Component<{}, StateTypes> {
     this.setState({
       selectedKind: parseInt((event.target as any).value, 10)
     })
+  }
+
+  onBlockClick(blockClass: BlockClass) {
+    blockStore.pickBlock(blockClass)
   }
 }

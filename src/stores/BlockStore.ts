@@ -1,5 +1,5 @@
 import Point from '../lib/Point'
-import BaseBlock from '../lib/blocks/BaseBlock'
+import {default as BaseBlock, BlockClass} from '../lib/blocks/BaseBlock'
 import SliderBlock from '../lib/blocks/SliderBlock'
 import LabelBlock from '../lib/blocks/LabelBlock'
 import PlusBlock from '../lib/blocks/PlusBlock'
@@ -13,15 +13,22 @@ class BlockStore extends BaseStore {
     [new Point(400, 100), new PlusBlock],
     [new Point(800, 100), new LabelBlock]
   ])
+  floatingBlock: BlockClass | null = null
 
   constructor() {
     super()
     this.configure()
   }
 
-  placeBlock(point: Point, block: BaseBlock) {
-    this.placedBlocks = this.placedBlocks.set(point, block)  // ugly but using setter is required
-    // TODO: セッターが呼ばれたときではなくアクションの完了時にBaseStore#notifyする
+  pickBlock(blockClass: BlockClass) {
+    this.floatingBlock = blockClass
+  }
+
+  placeBlock(point: Point) {
+    console.assert(this.floatingBlock !== null)
+
+    this.placedBlocks = this.placedBlocks.set(point, new this.floatingBlock!)  // ugly but using setter is required
+    this.floatingBlock = null
   }
 
   removeBlock(block: BaseBlock) {
