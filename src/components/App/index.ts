@@ -1,10 +1,10 @@
 import * as React from 'react'
 import * as h from 'react-hyperscript'
-import Canvas from '../Canvas'
+import Editor from '../Editor'
 
 
 export default class extends React.Component {
   render() {
-    return h(Canvas)  // TODO: Editorにする
+    return h(Editor)
   }
 }
