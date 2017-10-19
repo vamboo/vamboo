@@ -8,7 +8,9 @@ export enum BlockKinds {
   Source,
   Function,
   Sink,
-  GUI
+  GUI,
+  Begin,
+  End
 }
 
 // TypeScript does not support interface which includes static members and instance members...
@@ -49,4 +51,26 @@ export abstract class SinkBlock extends BaseBlock {
   readonly outputs = []
 }
 
-export type BlockClass = typeof BaseBlock | typeof GUIElementBlock | typeof SourceBlock | typeof SinkBlock
+export abstract class BeginBlock extends BaseBlock {
+  static blockKind = BlockKinds.Begin
+  static endBlockClass: typeof EndBlock
+
+  endBlock: EndBlock
+
+  connect(endBlock: EndBlock) {
+    this.endBlock = endBlock
+  }
+}
+
+export abstract class EndBlock extends BaseBlock {
+  static blockKind = BlockKinds.End
+  static beginBlockClass: typeof BeginBlock
+}
+
+export type BlockClass
+  = typeof FunctionBlock
+  | typeof GUIElementBlock
+  | typeof SourceBlock
+  | typeof SinkBlock
+  | typeof BeginBlock
+  | typeof EndBlock
