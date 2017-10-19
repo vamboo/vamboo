@@ -14,6 +14,7 @@ export default abstract class BaseBlock {
 
   protected configure() {
     this.inputs.forEach(input => {
+      input.connectionSubscription.subscribe(this.onInputUpdate.bind(this))
       input.valueSubscription.subscribe(this.onInputUpdate.bind(this))
     })
   }
@@ -24,7 +25,7 @@ export default abstract class BaseBlock {
 export abstract class FunctionBlock extends BaseBlock {}
 
 export abstract class GUIElementBlock extends BaseBlock {
-  static reactComponent: React.ComponentClass
+  static drawer: React.ComponentClass
 }
 
 export abstract class SourceBlock extends BaseBlock {

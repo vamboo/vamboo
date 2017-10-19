@@ -4,7 +4,6 @@ import Input from '../../lib/Input'
 import Output from '../../lib/Output'
 import Point from '../../lib/Point'
 import arrowStore from '../../stores/ArrowStore'
-import * as s from './style.styl'
 import * as canvasStyle from '../Canvas/style.styl'
 
 
@@ -13,41 +12,38 @@ interface PropTypes {
 }
 
 export default class extends React.Component<PropTypes, {isEditable: boolean}> {
+  rerender = () => this.forceUpdate()
+
   constructor(props: PropTypes) {
     super(props)
     this.state = {
       isEditable: props.input.connectionSubscription.value === null
     }
-
-    this.onConnectionChange = this.onConnectionChange.bind(this)
   }
 
   componentDidMount() {
-    this.props.input.connectionSubscription.subscribe(this.onConnectionChange)
+    this.props.input.connectionSubscription.subscribe(this.rerender)
+    this.props.input.valueSubscription.subscribe(this.rerender)
   }
 
   componentWillUnmount() {
-    this.props.input.connectionSubscription.unsubscribe(this.onConnectionChange)
+    this.props.input.connectionSubscription.unsubscribe(this.rerender)
+    this.props.input.valueSubscription.unsubscribe(this.rerender)
   }
 
   render() {
-    return h('li', {
-      className: s.component + (this.state.isEditable ? 'editable' : ''),
-      onClick: this.onClick.bind(this)
-    }, [
+    return h('li', {onClick: this.onClick.bind(this)}, [
       h('label', [
         this.props.input.name,
-        h('input', {type: 'text', onChange: this.onTextBoxChange.bind(this)})
+        h('input', {
+          type: 'text',
+          value: this.props.input.value || '',
+          disabled: this.props.input.connectionSubscription.value !== null
+            && this.props.input.connectionSubscription.value.name !== null,
+          onChange: this.onTextBoxChange.bind(this)
+        })
       ])
     ])
-  }
-
-  onConnectionChange() {
-    this.setState({
-      isEditable:
-        this.props.input.connectionSubscription.value === null
-        || this.props.input.connectionSubscription.value.name === null
-    })
   }
 
   onTextBoxChange(event: Event) {

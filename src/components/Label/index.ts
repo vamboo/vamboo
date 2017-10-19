@@ -12,12 +12,14 @@ export default class extends React.Component<PropTypes> {
 
   componentDidMount() {
     this.props.block.inputs.forEach(input => {
+      input.connectionSubscription.subscribe(this.rerender)
       input.valueSubscription.subscribe(this.rerender)
     })
   }
 
   componentWillUnmount() {
     this.props.block.inputs.forEach(input => {
+      input.connectionSubscription.unsubscribe(this.rerender)
       input.valueSubscription.unsubscribe(this.rerender)
     })
   }
