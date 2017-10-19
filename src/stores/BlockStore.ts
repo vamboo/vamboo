@@ -7,12 +7,7 @@ import BaseStore from './BaseStore'
 
 
 class BlockStore extends BaseStore {
-  placedBlocks = new Map<Point, BaseBlock>([
-    [new Point(40, 100), new SliderBlock],
-    [new Point(40, 300), new SliderBlock],
-    [new Point(400, 100), new PlusBlock],
-    [new Point(800, 100), new LabelBlock]
-  ])
+  placedBlocks = new Map<Point, BaseBlock>()
   floatingBlock: BlockClass | null = null
 
   constructor() {
