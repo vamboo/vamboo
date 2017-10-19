@@ -56,12 +56,7 @@ export default class extends React.Component<PropTypes, {isEditable: boolean}> {
   }
 
   onClick(event: MouseEvent) {
-    // TODO: clientXではなくCanvasのスクロールを考慮した値を使う
-    if (arrowStore.floatingArrow === null) return  // TODO: as any が必要なのいつか直したい...
-
-    const canvas = document.getElementsByClassName(canvasStyle.component)[0]
-    const clickedX = canvas.scrollLeft + event.clientX
-    const clickedY = canvas.scrollTop + event.clientY
-    arrowStore.finish(new Point(clickedX, clickedY), this.props.input)
+    if (arrowStore.startsFrom === null) return
+    arrowStore.finish(this.props.input)
   }
 }

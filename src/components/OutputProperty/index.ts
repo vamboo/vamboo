@@ -15,11 +15,7 @@ export default class extends React.Component<PropTypes> {
     return h('li', {'data-output-id': this.props.output.instanceId, onClick: this.onClick.bind(this)}, this.props.output.name!)
   }
 
-  onClick(event: MouseEvent) {
-    const canvas = document.getElementsByClassName(canvasStyle.component)[0]
-    const clickedX = canvas.scrollLeft + event.clientX
-    const clickedY = canvas.scrollTop + event.clientY
-
-    arrowStore.start(new Point(clickedX, clickedY), this.props.output)
+  onClick() {
+    arrowStore.start(this.props.output)
   }
 }
