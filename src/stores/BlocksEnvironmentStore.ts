@@ -5,10 +5,11 @@ import {default as BaseBlock, FunctionBlock, GUIElementBlock, SourceBlock, SinkB
 import SliderBlock from '../lib/blocks/SliderBlock'
 import PlusBlock from '../lib/blocks/PlusBlock'
 import LabelBlock from '../lib/blocks/LabelBlock'
+import SubtractBlock from '../lib/blocks/SubtractBlock'
 
 
 class BlocksEnvironmentStore extends BaseStore {
-  private blockClasses: BlockClass[] = [SliderBlock, PlusBlock, LabelBlock]
+  private blockClasses: BlockClass[] = [SliderBlock, PlusBlock, LabelBlock, SubtractBlock]
 
   constructor() {
     super()

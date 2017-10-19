@@ -18,7 +18,7 @@ export default class extends React.Component {
   }
 
   render() {
-    return h('div', {className: s.component}, Array.from(blockStore.blocks).map(
+    return h('div', {className: s.component}, Array.from(blockStore.placedBlocks).map(
       ([pos, block]) => h('div', {style: {left: pos.x, top: pos.y}}, [
         h(PlacedBlock, {block})
       ])

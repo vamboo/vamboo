@@ -37,7 +37,7 @@ export default class extends React.Component<PropTypes, {isEditable: boolean}> {
         this.props.input.name,
         h('input', {
           type: 'text',
-          value: this.props.input.value || '',
+          value: this.props.input.value === null ? '' : this.props.input.value,
           disabled: this.props.input.connectionSubscription.value !== null
             && this.props.input.connectionSubscription.value.name !== null,
           onChange: this.onTextBoxChange.bind(this)
