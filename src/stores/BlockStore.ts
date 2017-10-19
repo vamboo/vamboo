@@ -8,7 +8,7 @@ import BaseStore from './BaseStore'
 
 class BlockStore extends BaseStore {
   placedBlocks = new Map<Point, BaseBlock>()
-  floatingBlock: BlockClass | null = null
+  blockClassToPlace: BlockClass | null = null
 
   constructor() {
     super()
@@ -16,14 +16,14 @@ class BlockStore extends BaseStore {
   }
 
   pickBlock(blockClass: BlockClass) {
-    this.floatingBlock = blockClass
+    this.blockClassToPlace = blockClass
   }
 
-  placeBlock(point: Point) {
-    console.assert(this.floatingBlock !== null)
+  placeBlock(position: Point) {
+    console.assert(this.blockClassToPlace !== null)
 
-    this.placedBlocks = this.placedBlocks.set(point, new this.floatingBlock!)  // ugly but using setter is required
-    this.floatingBlock = null
+    this.placedBlocks = this.placedBlocks.set(position, new this.blockClassToPlace!)
+    this.blockClassToPlace = null
   }
 
   removeBlock(block: BaseBlock) {

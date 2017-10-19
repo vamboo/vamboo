@@ -43,7 +43,7 @@ export default class BlockList extends React.Component<{}, StateTypes> {
       )),
       h('ul', blocksEnvironmentStore.getBlockClasses(this.state.selectedKind).map(
         blockClass => h('li', {
-          className: blockClass === blockStore.floatingBlock ? s.selected : '',
+          className: blockClass === blockStore.blockClassToPlace ? s.selected : '',
           onClick: () => this.onBlockClick(blockClass)
         }, blockClass.blockName)
       ))
