@@ -1,6 +1,7 @@
 import * as _ from 'lodash'
 import BaseStore from './BaseStore'
-import {default as BaseBlock, FunctionBlock, GUIElementBlock, SourceBlock, SinkBlock, BlockClass, BlockKinds} from '../lib/blocks/BaseBlock'
+import {default as BaseBlock, FunctionBlock, GUIElementBlock, SourceBlock, SinkBlock, BlockClass, BlockKinds}
+  from '../lib/blocks/BaseBlock'
 import SliderBlock from '../lib/blocks/SliderBlock'
 import PlusBlock from '../lib/blocks/PlusBlock'
 import LabelBlock from '../lib/blocks/LabelBlock'
