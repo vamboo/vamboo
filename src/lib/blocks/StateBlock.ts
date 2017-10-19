@@ -18,9 +18,8 @@ export class Begin extends BeginBlock {
   }
 
   onNewValueCome() {
-    // TODO: 二回呼ばれるのを直す
+    this.outputs[1].valueSubscription._value = this.endBlock.outputs[0].value
     this.outputs[0].value = this.inputs[0].value!
-    this.outputs[1].value = this.endBlock.outputs[0].value
   }
 }
 

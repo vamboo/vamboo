@@ -5,7 +5,7 @@ import Subscriber from './Subscriber'
 export default class Subscription<T> {
   private subscribers: Subscriber<T>[] = []
 
-  constructor(private _value: T) {}
+  constructor(public _value: T) {}
 
   subscribe(subscriber: Subscriber<T>) {
     this.subscribers.push(subscriber)
