@@ -7,7 +7,7 @@ import BaseStore from './BaseStore'
 
 
 class BlockStore extends BaseStore {
-  blocks = new Map<Point, BaseBlock>([
+  placedBlocks = new Map<Point, BaseBlock>([
     [new Point(40, 100), new SliderBlock],
     [new Point(40, 300), new SliderBlock],
     [new Point(400, 100), new PlusBlock],
@@ -20,23 +20,23 @@ class BlockStore extends BaseStore {
   }
 
   placeBlock(point: Point, block: BaseBlock) {
-    this.blocks = this.blocks.set(point, block)  // ugly but using setter is required
+    this.placedBlocks = this.placedBlocks.set(point, block)  // ugly but using setter is required
     // TODO: セッターが呼ばれたときではなくアクションの完了時にBaseStore#notifyする
   }
 
   removeBlock(block: BaseBlock) {
     const remaningBlocks: Map<Point, BaseBlock> = new Map
 
-    for (let [key, val] of this.blocks.entries()) {
+    for (let [key, val] of this.placedBlocks.entries()) {
       if (val === block) continue
       remaningBlocks.set(key, val)
     }
 
-    this.blocks = remaningBlocks
+    this.placedBlocks = remaningBlocks
   }
 
   clear() {
-    this.blocks = new Map
+    this.placedBlocks = new Map
   }
 }
 
