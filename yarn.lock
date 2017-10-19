@@ -217,6 +217,12 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react-hyperscript@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@types/react-hyperscript/-/react-hyperscript-3.0.0.tgz#aace6a0fef5ba7dab12530e04f9c3669aad9ece0"
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-tabs@^1.0.1":
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/@types/react-tabs/-/react-tabs-1.0.2.tgz#af52498beb5fe49e642c0c09e45f96151fc5d124"
