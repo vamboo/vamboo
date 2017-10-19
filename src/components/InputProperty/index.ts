@@ -23,10 +23,12 @@ export default class extends React.Component<PropTypes, {isEditable: boolean}> {
 
   componentDidMount() {
     this.props.input.connectionSubscription.subscribe(this.rerender)
+    this.props.input.valueSubscription.subscribe(this.rerender)
   }
 
   componentWillUnmount() {
     this.props.input.connectionSubscription.unsubscribe(this.rerender)
+    this.props.input.valueSubscription.unsubscribe(this.rerender)
   }
 
   render() {
@@ -35,6 +37,7 @@ export default class extends React.Component<PropTypes, {isEditable: boolean}> {
         this.props.input.name,
         h('input', {
           type: 'text',
+          value: this.props.input.value || '',
           disabled: this.props.input.connectionSubscription.value !== null
             && this.props.input.connectionSubscription.value.name !== null,
           onChange: this.onTextBoxChange.bind(this)
