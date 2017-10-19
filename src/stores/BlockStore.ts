@@ -8,10 +8,10 @@ import BaseStore from './BaseStore'
 
 class BlockStore extends BaseStore {
   blocks = new Map<Point, BaseBlock>([
-    [new Point(40, 0), new SliderBlock],
+    [new Point(40, 100), new SliderBlock],
     [new Point(40, 300), new SliderBlock],
-    [new Point(400, 0), new PlusBlock],
-    [new Point(1900, 0), new LabelBlock]
+    [new Point(400, 100), new PlusBlock],
+    [new Point(800, 100), new LabelBlock]
   ])
 
   constructor() {
