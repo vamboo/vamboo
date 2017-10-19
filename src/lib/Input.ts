@@ -1,3 +1,4 @@
+import * as _ from 'lodash'
 import Subscription from './Subscription'
 import Subscriber from './Subscriber'
 import Output from './Output'
@@ -5,6 +6,7 @@ import BaseBlock from './blocks/BaseBlock'
 
 
 export default class Input<T> {
+  instanceId = _.uniqueId(this.constructor.name)
   connectionSubscription: Subscription<Output<T> | null> = new Subscription(null)
   valueSubscription: Subscription<T | null> = new Subscription(null)
   // プログラムを組み立て、シリアライズし、それを走らせる、
@@ -12,13 +14,22 @@ export default class Input<T> {
 
   constructor(public name: string, public block: BaseBlock) {}
 
-  connect(newOutput: Output<T>) {
+  connect(output: Output<T>) {
     if (this.output !== null) {
       this.output.valueSubscription.unsubscribe(this.updateValue)
     }
 
-    this.output = newOutput
-    this.output.valueSubscription.subscribe(this.updateValue)
+    output.input = this
+    output.valueSubscription.subscribe(this.updateValue)
+    this.connectionSubscription.value = output
+  }
+
+  disconnect() {
+    if (this.output !== null) {
+      this.output.input = null
+      this.output.valueSubscription.unsubscribe(this.updateValue)
+      this.connectionSubscription.value = null
+    }
   }
 
   get value(): T | null {
@@ -27,12 +38,8 @@ export default class Input<T> {
     return this.output.value
   }
 
-  private get output(): Output<T> | null {
+  get output(): Output<T> | null {
     return this.connectionSubscription.value
-  }
-
-  private set output(output: Output<T> | null) {
-    this.connectionSubscription.value = output
   }
 
   private updateValue = (outputValueSubscription: Subscription<T>) => {

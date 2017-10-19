@@ -1,39 +1,30 @@
 import BaseStore from './BaseStore'
 import Input from '../lib/Input'
 import Output from '../lib/Output'
-import Point from '../lib/Point'
 
-
-class Arrow {
-  constructor(public start: Point, public end: Point) {}
-}
-
-class FloatingArrow {
-  constructor(public startsFrom: Point, public output: Output<any>) {}
-}
 
 class ArrowStore extends BaseStore {
-  placedArrows: Arrow[] = []
-  floatingArrow: FloatingArrow | null = null
+  startsFrom: Output<any> | null = null
 
   constructor() {
     super()
     this.configure()
   }
 
-  start(startsFrom: Point, output: Output<any>) {
-    this.floatingArrow = new FloatingArrow(startsFrom, output)
+  start(output: Output<any>) {
+    this.startsFrom = output
   }
 
-  finish(endsAt: Point, input: Input<any>) {
-    console.assert(this.floatingArrow !== null)
+  finish(input: Input<any>) {
+    console.assert(this.startsFrom !== null)
 
-    input.connect(this.floatingArrow!.output)
-    this.placedArrows = this.placedArrows.concat([new Arrow(this.floatingArrow!.startsFrom, endsAt)])
-    this.floatingArrow = null
-    // TODO: ここで二回Store#notify()が呼ばれてしまうのをどうにかする
+    input.connect(this.startsFrom!)
+    this.startsFrom = null
+  }
 
-    console.log('finish', this.placedArrows)
+  disconnect(target: Input<any>) {
+    target.disconnect()
+    this.startsFrom = null  // ugly but necessary to notify update
   }
 }
 

@@ -1,9 +1,9 @@
 import * as React from 'react'
 import * as h from 'react-hyperscript'
 import * as _ from 'lodash'
-import arrowStore from '../../stores/ArrowStore'
+import blockStore from '../../stores/BlockStore'
 import PlacedArrows from '../PlacedArrows'
-// import FloatingArrow from '../FloatingArrow'
+import * as canvasStyle from '../Canvas/style.styl'
 import * as s from './style.styl'
 
 
@@ -11,19 +11,21 @@ export default class extends React.Component {
   rerender = () => this.forceUpdate()
 
   componentDidMount() {
-    arrowStore.subscribe(this.rerender)
+    blockStore.subscribe(this.rerender)
   }
 
   componentWillUnmount() {
-    arrowStore.unsubscribe(this.rerender)
+    blockStore.unsubscribe(this.rerender)
   }
 
   render() {
-    const arrowPoints = _.flatMap(arrowStore.placedArrows, arrow => [arrow.start, arrow.end])
-    const mostRightArrow = _.max(arrowPoints.map(point => point.x))
-    const mostBottomArrow = _.max(arrowPoints.map(point => point.y))
+    const canvas = document.getElementsByClassName(canvasStyle.component)[0]
 
-    return h('svg', {className: s.component, width: mostRightArrow, height: mostBottomArrow}, [
+    return h('svg', {
+      className: s.component,
+      width: canvas && canvas.scrollWidth,
+      height: canvas && canvas.scrollHeight
+    }, [
       h(PlacedArrows),
 //      TODO: h(FloatingArrow)
     ])

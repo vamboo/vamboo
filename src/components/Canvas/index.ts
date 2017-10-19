@@ -21,7 +21,7 @@ export default class extends React.Component {
     const clickedX = canvas.scrollLeft + event.clientX
     const clickedY = canvas.scrollTop + event.clientY
 
-    if (blockStore.floatingBlock !== null) {
+    if (blockStore.blockClassToPlace !== null) {
       blockStore.placeBlock(new Point(clickedX, clickedY))
     }
   }

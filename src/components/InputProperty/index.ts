@@ -32,9 +32,9 @@ export default class extends React.Component<PropTypes, {isEditable: boolean}> {
   }
 
   render() {
-    return h('li', {onClick: this.onClick.bind(this)}, [
+    return h('li', {'data-input-id': this.props.input.instanceId}, [
       h('label', [
-        this.props.input.name,
+        h('div', {onClick: this.onClick.bind(this)}, this.props.input.name),
         h('input', {
           type: 'text',
           value: this.props.input.value === null ? '' : this.props.input.value,
@@ -56,12 +56,10 @@ export default class extends React.Component<PropTypes, {isEditable: boolean}> {
   }
 
   onClick(event: MouseEvent) {
-    // TODO: clientXではなくCanvasのスクロールを考慮した値を使う
-    if (arrowStore.floatingArrow === null) return  // TODO: as any が必要なのいつか直したい...
-
-    const canvas = document.getElementsByClassName(canvasStyle.component)[0]
-    const clickedX = canvas.scrollLeft + event.clientX
-    const clickedY = canvas.scrollTop + event.clientY
-    arrowStore.finish(new Point(clickedX, clickedY), this.props.input)
+    if (arrowStore.startsFrom === null) {
+      arrowStore.disconnect(this.props.input)
+    } else {
+      arrowStore.finish(this.props.input)
+    }
   }
 }
