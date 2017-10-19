@@ -7,10 +7,11 @@ import PlusBlock from '../lib/blocks/PlusBlock'
 import LabelBlock from '../lib/blocks/LabelBlock'
 import SubtractBlock from '../lib/blocks/SubtractBlock'
 import * as StateBlock from '../lib/blocks/StateBlock'
+import ButtonBlock from '../lib/blocks/ButtonBlock'
 
 
 class BlocksEnvironmentStore extends BaseStore {
-  private blockClasses: BlockClass[] = [SliderBlock, PlusBlock, LabelBlock, SubtractBlock, StateBlock.End]
+  private blockClasses: BlockClass[] = [SliderBlock, PlusBlock, LabelBlock, SubtractBlock, StateBlock.End, ButtonBlock]
 
   constructor() {
     super()
