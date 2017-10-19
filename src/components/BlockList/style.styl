@@ -1,5 +1,5 @@
 .component
-  flex 0 0 300px
+  flex 0 0 350px
   color black
 
   ul
@@ -7,22 +7,32 @@
       list-style none
       padding 0
       margin 0
+      margin-top 20px
 
       li
-        border inset 2px black
+        border inset 1px #a3a3a3
         text-align center
         display inline
         background-color white
-        padding 3px
+        padding 10px
 
         &:hover
-          background-color #c4c4c4
+          background-color #f2f2f2
 
     &:last-child
+      border inset 1px #a3a3a3
+      border-radius 0 0 0.2em 0.2em
+      height 150px
+      width 281px
+      margin-top 10px
+      padding-top 20px
+      background-color white
+      overflow-y scroll
       li
-        border inset 2px black
         margin 0
-        width 200px
+        border-bottom inset 1px #a3a3a3
+        width 235px
+        list-style none
 
 .selected
   font-weight bold
