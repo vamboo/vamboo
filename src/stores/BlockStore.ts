@@ -11,7 +11,7 @@ class BlockStore extends BaseStore {
     [new Point(40, 0), new SliderBlock],
     [new Point(40, 300), new SliderBlock],
     [new Point(400, 0), new PlusBlock],
-    [new Point(900, 0), new LabelBlock]
+    [new Point(1900, 0), new LabelBlock]
   ])
 
   constructor() {
