@@ -32,7 +32,7 @@ export default class extends React.Component<PropTypes, {isEditable: boolean}> {
   }
 
   render() {
-    return h('li', {onClick: this.onClick.bind(this)}, [
+    return h('li', {'data-input-id': this.props.input.instanceId, onClick: this.onClick.bind(this)}, [
       h('label', [
         this.props.input.name,
         h('input', {

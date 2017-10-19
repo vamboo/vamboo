@@ -1,7 +1,9 @@
+import * as _ from 'lodash'
 import Subscription from './Subscription'
 
 
 export default class Output<T> {
+  instanceId = _.uniqueId(this.constructor.name)
   valueSubscription: Subscription<T>
 
   constructor(public name: string | null, initialValue: T) {

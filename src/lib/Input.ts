@@ -1,3 +1,4 @@
+import * as _ from 'lodash'
 import Subscription from './Subscription'
 import Subscriber from './Subscriber'
 import Output from './Output'
@@ -5,6 +6,7 @@ import BaseBlock from './blocks/BaseBlock'
 
 
 export default class Input<T> {
+  instanceId = _.uniqueId(this.constructor.name)
   connectionSubscription: Subscription<Output<T> | null> = new Subscription(null)
   valueSubscription: Subscription<T | null> = new Subscription(null)
   // プログラムを組み立て、シリアライズし、それを走らせる、

@@ -12,7 +12,7 @@ interface PropTypes {
 
 export default class extends React.Component<PropTypes> {
   render() {
-    return h('li', {onClick: this.onClick.bind(this)}, this.props.output.name!)
+    return h('li', {'data-output-id': this.props.output.instanceId, onClick: this.onClick.bind(this)}, this.props.output.name!)
   }
 
   onClick(event: MouseEvent) {
