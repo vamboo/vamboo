@@ -14,6 +14,7 @@ export default abstract class BaseBlock {
 
   protected configure() {
     this.inputs.forEach(input => {
+      input.connectionSubscription.subscribe(this.onInputUpdate.bind(this))
       input.valueSubscription.subscribe(this.onInputUpdate.bind(this))
     })
   }
