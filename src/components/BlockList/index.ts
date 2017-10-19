@@ -16,10 +16,12 @@ export default class BlockList extends React.Component<{}, StateTypes> {
   state = {selectedKind: BlockKinds.GUI}
 
   componentDidMount() {
+    blockStore.subscribe(this.rerender)
     blocksEnvironmentStore.subscribe(this.rerender)
   }
 
   componentWillUnmount() {
+    blockStore.unsubscribe(this.rerender)
     blocksEnvironmentStore.unsubscribe(this.rerender)
   }
 
@@ -40,7 +42,10 @@ export default class BlockList extends React.Component<{}, StateTypes> {
         ])
       )),
       h('ul', blocksEnvironmentStore.getBlockClasses(this.state.selectedKind).map(
-        blockClass => h('li', {onClick: () => this.onBlockClick(blockClass)}, blockClass.blockName)
+        blockClass => h('li', {
+          className: blockClass === blockStore.floatingBlock ? s.selected : '',
+          onClick: () => this.onBlockClick(blockClass)
+        }, blockClass.blockName)
       ))
     ])
   }
