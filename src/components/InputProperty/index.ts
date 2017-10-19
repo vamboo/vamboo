@@ -5,6 +5,7 @@ import Output from '../../lib/Output'
 import Point from '../../lib/Point'
 import arrowStore from '../../stores/ArrowStore'
 import * as s from './style.styl'
+import * as canvasStyle from '../Canvas/style.styl'
 
 
 interface PropTypes {
@@ -62,6 +63,9 @@ export default class extends React.Component<PropTypes, {isEditable: boolean}> {
     // TODO: clientXではなくCanvasのスクロールを考慮した値を使う
     if (arrowStore.floatingArrow === null) return  // TODO: as any が必要なのいつか直したい...
 
-    arrowStore.finish(new Point(event.clientX, event.clientY), this.props.input)
+    const canvas = document.getElementsByClassName(canvasStyle.component)[0]
+    const clickedX = canvas.scrollLeft + event.clientX
+    const clickedY = canvas.scrollTop + event.clientY
+    arrowStore.finish(new Point(clickedX, clickedY), this.props.input)
   }
 }
