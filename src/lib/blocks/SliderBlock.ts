@@ -5,7 +5,7 @@ import Slider from '../../components/Slider'
 
 export default class extends GUIElementBlock {
   static blockName = 'スライダー'
-  static reactComponent = Slider
+  static drawer = Slider
 
   inputs = []
   outputs = [new Output('値', 50)]

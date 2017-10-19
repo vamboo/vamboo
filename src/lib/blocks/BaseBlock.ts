@@ -24,7 +24,7 @@ export default abstract class BaseBlock {
 export abstract class FunctionBlock extends BaseBlock {}
 
 export abstract class GUIElementBlock extends BaseBlock {
-  static reactComponent: React.ComponentClass
+  static drawer: React.ComponentClass
 }
 
 export abstract class SourceBlock extends BaseBlock {

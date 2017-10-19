@@ -15,7 +15,7 @@ export default class extends React.Component<PropTypes> {
     if (this.props.block instanceof GUIElementBlock) {
       blockView = [
         h('div', {className: s.view}, [
-          h((this.props.block.constructor as typeof GUIElementBlock).reactComponent, {block: this.props.block})
+          h((this.props.block.constructor as typeof GUIElementBlock).drawer, {block: this.props.block})
         ])
       ]
     }

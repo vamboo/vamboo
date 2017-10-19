@@ -6,7 +6,7 @@ import Label from '../../components/Label'
 
 export default class extends GUIElementBlock {
   static blockName = 'ラベル'
-  static reactComponent = Label
+  static drawer = Label
 
   inputs: Input<any>[] = [new Input('表示する文字列', this)]
   outputs = []  // TODO: クリックとか
