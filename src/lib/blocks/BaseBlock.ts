@@ -67,4 +67,10 @@ export abstract class EndBlock extends BaseBlock {
   static beginBlockClass: typeof BeginBlock
 }
 
-export type BlockClass = typeof FunctionBlock | typeof GUIElementBlock | typeof SourceBlock | typeof SinkBlock | typeof BeginBlock | typeof EndBlock
+export type BlockClass
+  = typeof FunctionBlock
+  | typeof GUIElementBlock
+  | typeof SourceBlock
+  | typeof SinkBlock
+  | typeof BeginBlock
+  | typeof EndBlock
