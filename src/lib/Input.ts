@@ -14,13 +14,22 @@ export default class Input<T> {
 
   constructor(public name: string, public block: BaseBlock) {}
 
-  connect(newOutput: Output<T>) {
+  connect(output: Output<T>) {
     if (this.output !== null) {
       this.output.valueSubscription.unsubscribe(this.updateValue)
     }
 
-    this.output = newOutput
-    this.output.valueSubscription.subscribe(this.updateValue)
+    output.input = this
+    output.valueSubscription.subscribe(this.updateValue)
+    this.connectionSubscription.value = output
+  }
+
+  disconnect() {
+    if (this.output !== null) {
+      this.output.input = null
+      this.output.valueSubscription.unsubscribe(this.updateValue)
+      this.connectionSubscription.value = null
+    }
   }
 
   get value(): T | null {
@@ -29,20 +38,8 @@ export default class Input<T> {
     return this.output.value
   }
 
-  disconnect() {
-    if (this.output !== null) {
-      this.output.valueSubscription.unsubscribe(this.updateValue)
-    }
-
-    this.output = null
-  }
-
-  private get output(): Output<T> | null {
+  get output(): Output<T> | null {
     return this.connectionSubscription.value
-  }
-
-  private set output(output: Output<T> | null) {
-    this.connectionSubscription.value = output
   }
 
   private updateValue = (outputValueSubscription: Subscription<T>) => {

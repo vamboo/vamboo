@@ -27,6 +27,13 @@ class BlockStore extends BaseStore {
   }
 
   removeBlock(block: BaseBlock) {
+    block.inputs.forEach(input => {
+      input.disconnect()
+    })
+    block.outputs.forEach(output => {
+      output.disconnect()
+    })
+
     const remaningBlocks: Map<Point, BaseBlock> = new Map
 
     for (let [key, val] of this.placedBlocks.entries()) {
