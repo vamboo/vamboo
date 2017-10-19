@@ -11,6 +11,7 @@
     "@types/node": "^8.0.25",
     "@types/react": "^15.6.2",
     "@types/react-dom": "^15.5.1",
+    "@types/react-hyperscript": "^3.0.0",
     "@types/react-tabs": "^1.0.1",
     "@types/sinon": "^2.3.3",
     "@types/storybook__react": "^3.0.5",
