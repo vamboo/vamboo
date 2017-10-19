@@ -21,7 +21,11 @@ export default class extends React.Component {
   render() {
     const canvas = document.getElementsByClassName(canvasStyle.component)[0]
 
-    return h('svg', {className: s.component, width: canvas && canvas.scrollWidth, height: canvas && canvas.scrollHeight}, [
+    return h('svg', {
+      className: s.component,
+      width: canvas && canvas.scrollWidth,
+      height: canvas && canvas.scrollHeight
+    }, [
       h(PlacedArrows),
 //      TODO: h(FloatingArrow)
     ])
