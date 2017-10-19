@@ -1,7 +1,6 @@
 import {SinkBlock} from './BaseBlock'
 import Input from '../Input'
 import Output from '../Output'
-import {blocksEnvironment} from '../BlocksEnvironment'
 
 
 export default class LoggingBlock extends SinkBlock {
