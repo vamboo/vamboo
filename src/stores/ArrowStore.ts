@@ -21,6 +21,11 @@ class ArrowStore extends BaseStore {
     input.connect(this.startsFrom!)
     this.startsFrom = null
   }
+
+  disconnect(target: Input<any>) {
+    target.disconnect()
+    this.startsFrom = null  // ugly but necessary to notify update
+  }
 }
 
 export default new ArrowStore

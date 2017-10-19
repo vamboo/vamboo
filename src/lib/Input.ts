@@ -29,6 +29,14 @@ export default class Input<T> {
     return this.output.value
   }
 
+  disconnect() {
+    if (this.output !== null) {
+      this.output.valueSubscription.unsubscribe(this.updateValue)
+    }
+
+    this.output = null
+  }
+
   private get output(): Output<T> | null {
     return this.connectionSubscription.value
   }
