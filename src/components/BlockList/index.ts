@@ -26,11 +26,10 @@ export default class BlockList extends React.Component<{}, StateTypes> {
   }
 
   render() {
-    const stylePath = 'src/components/BlockList/style.styl/'
     return h('div', {className: s.component}, [
       h('ul', _.range(Object.keys(BlockKinds).length / 2).map(
         blockKindIndex => h('li', {
-          className: blockKindIndex === this.state.selectedKind ? stylePath + 'active-tab' : stylePath + 'tab'
+          className: blockKindIndex === this.state.selectedKind ? s.activeTab : s.tab
         }, [
           h('label', [
             h('input', {
