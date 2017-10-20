@@ -8,6 +8,6 @@ export default class extends GUIElementBlock {
   static blockName = 'ラベル'
   static drawer = Label
 
-  inputs: Input<any>[] = [new Input('表示する文字列', this)]
+  inputs: Input<any>[] = [new Input('表示する文字列', '', this)]
   outputs = []  // TODO: クリックとか
 }

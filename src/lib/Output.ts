@@ -1,15 +1,22 @@
 import * as _ from 'lodash'
-import Subscription from './Subscription'
 import Input from './Input'
+import Subscription from './Subscription'
+import {PushPullFunctionBlock} from './blocks/BaseBlock'
 
 
 export default class Output<T> {
-  instanceId = _.uniqueId(this.constructor.name)
-  valueSubscription: Subscription<T>
+  readonly id = _.uniqueId(this.constructor.name)
   input: Input<T> | null = null
+  pushSubscription: Subscription<T>
+  pullSubscription: Subscription<T>
 
-  constructor(public name: string | null, initialValue: T) {
-    this.valueSubscription = new Subscription(initialValue)
+  constructor(public name: string | null, initialValue: T, private willPropagateUpdate = true) {
+    this.pushSubscription = new Subscription(initialValue)
+    this.pullSubscription = new Subscription(initialValue)
+  }
+
+  isAnonymous() {
+    return this.name === null
   }
 
   connect(input: Input<T>) {
@@ -22,11 +29,30 @@ export default class Output<T> {
     }
   }
 
-  get value() {
-    return this.valueSubscription.value
+  isConnected() {
+    return this.input !== null
   }
 
-  set value(newValue) {
-    this.valueSubscription.value = newValue
+  push(value: T) {
+    if (this.willPropagateUpdate) {
+      this.pushSubscription.value = value
+    } else {
+      this.pushSubscription._value = value
+    }
+  }
+
+  pull() {
+    return this.pushSubscription.value
+  }
+}
+
+export class LazyOutput<T> extends Output<T> {
+  constructor(name: string | null, initialValue: T, public block: PushPullFunctionBlock<T>) {
+    super(name, initialValue, true)
+  }
+
+  pull() {
+    this.pullSubscription.value = this.block.pull()
+    return this.pullSubscription.value
   }
 }

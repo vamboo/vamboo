@@ -13,7 +13,7 @@ interface PropTypes {
 export default class extends React.Component<PropTypes> {
   render() {
     return h('li', {
-      'data-output-id': this.props.output.instanceId,
+      'data-output-id': this.props.output.id,
       onClick: this.onClick.bind(this)
     }, this.props.output.name!)
   }

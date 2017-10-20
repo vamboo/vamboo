@@ -1,13 +1,13 @@
-import {FunctionBlock} from './BaseBlock'
+import {PushPullFunctionBlock} from './BaseBlock'
 import Input from '../Input'
-import Output from '../Output'
+import {LazyOutput} from '../Output'
 
 
-export default class extends FunctionBlock {
+export default class extends PushPullFunctionBlock<number> {
   static blockName = '固定'
 
-  inputs: Input<number>[] = [new Input<number>('A', this), new Input<number>('B', this)]
-  outputs: Output<number>[] = [new Output<number>('B', 0)]
+  inputs: Input<number>[] = [new Input<number>('A', 0, this), new Input<number>('B', 0, this)]
+  outputs: [LazyOutput<number>] = [new LazyOutput<number>('B', 0, this)]
 
   constructor() {
     super()
@@ -15,9 +15,7 @@ export default class extends FunctionBlock {
     this.configure()
   }
 
-  onInputUpdate() {
-    if (this.inputs[1].value !== null) {
-      this.outputs[0].value = this.inputs[1].value!
-    }
+  pull() {
+    return this.inputs[1].pushSubscription.value
   }
 }

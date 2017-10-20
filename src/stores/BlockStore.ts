@@ -23,14 +23,14 @@ class BlockStore extends BaseStore {
     console.assert(this.blockClassToPlace !== null)
 
     if (this.blockClassToPlace!.blockKind === BlockKinds.End) {
-      const endBlock = new this.blockClassToPlace!
+      const endBlock = new (this.blockClassToPlace! as any)
       this.placedBlocks.set(new Point(position.x + 1000, position.y), endBlock)
 
       const beginBlock = new (this.blockClassToPlace! as any).beginBlockClass
       beginBlock.connect(endBlock)
       this.placedBlocks.set(new Point(position.x, position.y), beginBlock)
     } else {
-      this.placedBlocks.set(position, new this.blockClassToPlace!)
+      this.placedBlocks.set(position, new (this.blockClassToPlace! as any))
     }
 
     this.blockClassToPlace = null
@@ -43,7 +43,6 @@ class BlockStore extends BaseStore {
     block.outputs.forEach(output => {
       output.disconnect()
     })
-
     const remaningBlocks: Map<Point, BaseBlock> = new Map
 
     for (let [key, val] of this.placedBlocks.entries()) {

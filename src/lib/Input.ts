@@ -6,43 +6,58 @@ import BaseBlock from './blocks/BaseBlock'
 
 
 export default class Input<T> {
-  instanceId = _.uniqueId(this.constructor.name)
-  connectionSubscription: Subscription<Output<T> | null> = new Subscription(null)
-  valueSubscription: Subscription<T | null> = new Subscription(null)
+  readonly id = _.uniqueId(this.constructor.name)
+  connectionSubscription: Subscription<Output<T>>
+  pushSubscription: Subscription<T>
+  pullSubscription: Subscription<T>
   // プログラムを組み立て、シリアライズし、それを走らせる、
   // という分離をちゃんとやっていればこんな複雑なSubscription同士の結びつきは起こらなかった...
 
-  constructor(public name: string, public block: BaseBlock) {}
+  constructor(public name: string, public initialValue: T, public block: BaseBlock) {
+    this.connectionSubscription = new Subscription(new Output(null, initialValue))
+    this.pushSubscription = new Subscription(initialValue)
+    this.pullSubscription = new Subscription(initialValue)
+  }
 
   connect(output: Output<T>) {
-    if (this.output !== null) {
-      this.output.valueSubscription.unsubscribe(this.updateValue)
-    }
+    this.output.pushSubscription.unsubscribe(this.updatePushedValue)
+    this.output.pullSubscription.unsubscribe(this.updatePulledValue)
+    output.pushSubscription.subscribe(this.updatePushedValue)
+    output.pullSubscription.subscribe(this.updatePulledValue)
 
-    output.input = this
-    output.valueSubscription.subscribe(this.updateValue)
     this.connectionSubscription.value = output
+    output.input = this
+
+    this.pushSubscription.value = output.pushSubscription.value
   }
 
   disconnect() {
-    if (this.output !== null) {
+    if (this.isConnected()) {
+      this.output.pushSubscription.unsubscribe(this.updatePushedValue)
+      this.output.pullSubscription.unsubscribe(this.updatePulledValue)
+
+      this.connectionSubscription.value = new Output(null, this.initialValue)
       this.output.input = null
-      this.output.valueSubscription.unsubscribe(this.updateValue)
-      this.connectionSubscription.value = null
     }
   }
 
-  get value(): T | null {
-    if (this.output === null) return null  // When this Input is not connected to any Output
-
-    return this.output.value
+  isConnected() {
+    return this.output.name !== null
   }
 
-  get output(): Output<T> | null {
+  pull(): T {
+    return this.output.pull()
+  }
+
+  get output(): Output<T> {
     return this.connectionSubscription.value
   }
 
-  private updateValue = (outputValueSubscription: Subscription<T>) => {
-    this.valueSubscription.value = outputValueSubscription.value
+  private updatePushedValue = ({value}: Subscription<T>) => {
+    this.pushSubscription.value = value
+  }
+
+  private updatePulledValue = ({value}: Subscription<T>) => {
+    this.pullSubscription.value = value
   }
 }

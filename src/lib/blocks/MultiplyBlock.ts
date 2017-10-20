@@ -1,21 +1,15 @@
-import {FunctionBlock} from './BaseBlock'
+import {PushPullFunctionBlock} from './BaseBlock'
 import Input from '../Input'
-import Output from '../Output'
+import {LazyOutput} from '../Output'
 
 
-export default class MultiplyBlock extends FunctionBlock {
+export default class MultiplyBlock extends PushPullFunctionBlock<number> {
   static blockName = '*'
 
-  inputs: Input<number>[] = [new Input<number>('operand1', this), new Input<number>('operand2', this)]
-  outputs: Output<number>[] = [new Output<number>('output1', 0)]
+  inputs: Input<number>[] = [new Input<number>('operand1', 1, this), new Input<number>('operand2', 0, this)]
+  outputs: [LazyOutput<number>] = [new LazyOutput('結果', 1, this)]
 
-  constructor() {
-    super()
-
-    this.configure()
-  }
-
-  onInputUpdate() {
-    this.outputs[0].value = this.inputs[0].value! * this.inputs[1].value!
+  pull() {
+    return this.inputs[0].pull() * this.inputs[1].pull()
   }
 }
