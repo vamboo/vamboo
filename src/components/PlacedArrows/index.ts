@@ -26,11 +26,11 @@ export default class extends React.Component {
         const canvas = document.getElementsByClassName(canvasStyle.component)[0]
         const inputPropertyBox =
           document
-          .querySelectorAll(`[data-input-id=${input.instanceId}]`)[0]
+          .querySelectorAll(`[data-input-id=${input.id}]`)[0]
           .getBoundingClientRect()
         const outputPropertyBox =
           document
-          .querySelectorAll(`[data-output-id=${input.connectionSubscription.value.instanceId}]`)[0]
+          .querySelectorAll(`[data-output-id=${input.connectionSubscription.value.id}]`)[0]
           .getBoundingClientRect()
         return [
           h('line', {

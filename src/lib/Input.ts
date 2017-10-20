@@ -6,39 +6,45 @@ import BaseBlock from './blocks/BaseBlock'
 
 
 export default class Input<T> {
-  instanceId = _.uniqueId(this.constructor.name)
-  connectionSubscription: Subscription<Output<T> | null> = new Subscription(null)
-  valueSubscription: Subscription<T | null> = new Subscription(null)
+  readonly id = _.uniqueId(this.constructor.name)
+  connectionSubscription: Subscription<Output<T>>
+  valueSubscription: Subscription<T>
   // プログラムを組み立て、シリアライズし、それを走らせる、
   // という分離をちゃんとやっていればこんな複雑なSubscription同士の結びつきは起こらなかった...
 
-  constructor(public name: string, public block: BaseBlock) {}
+  constructor(public name: string, private initialValue: T, public block: BaseBlock) {
+    this.connectionSubscription = new Subscription(new Output(null, initialValue))
+    this.valueSubscription = new Subscription(initialValue)
+  }
 
   connect(output: Output<T>) {
-    if (this.output !== null) {
-      this.output.valueSubscription.unsubscribe(this.updateValue)
-    }
-
+    this.output.valueSubscription.unsubscribe(this.updateValue)
     output.input = this
     output.valueSubscription.subscribe(this.updateValue)
     this.connectionSubscription.value = output
   }
 
   disconnect() {
-    if (this.output !== null) {
+    if (this.isConnected()) {
       this.output.input = null
       this.output.valueSubscription.unsubscribe(this.updateValue)
-      this.connectionSubscription.value = null
+      this.connectionSubscription.value = new Output(null, this.initialValue)
     }
   }
 
-  get value(): T | null {
-    if (this.output === null) return null  // When this Input is not connected to any Output
+  isConnected() {
+    return this.output.name !== null
+  }
 
+  pull(): T {
+    return this.output.pull()
+  }
+
+  get value(): T {
     return this.output.value
   }
 
-  get output(): Output<T> | null {
+  get output(): Output<T> {
     return this.connectionSubscription.value
   }
 

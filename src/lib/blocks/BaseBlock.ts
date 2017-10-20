@@ -1,7 +1,8 @@
+import * as _ from 'lodash'
 import * as React from 'react'
 import Subscription from '../Subscription'
 import Input from '../Input'
-import Output from '../Output'
+import {default as Output, LazyOutput} from '../Output'
 
 
 export enum BlockKinds {
@@ -13,27 +14,32 @@ export enum BlockKinds {
   End
 }
 
-// TypeScript does not support interface which includes static members and instance members...
 export default abstract class BaseBlock {
-  static blockName: string  // static property 'name' conflicts with Function.name
+  static blockName: string
   static blockKind: BlockKinds
-  // TypeScript does not support abstract static property...
 
-  abstract inputs: Input<any>[]
-  abstract outputs: Output<any>[]
+  inputs: Input<any>[] = []
+  outputs: Output<any>[] = []
+}
 
-  protected configure() {
+export abstract class PushFunctionBlock extends BaseBlock {
+  static blockKind = BlockKinds.Function
+}
+
+export abstract class PushPullFunctionBlock<T> extends PushFunctionBlock {
+  abstract outputs: [LazyOutput<T>]
+
+  configure() {
     this.inputs.forEach(input => {
-      input.connectionSubscription.subscribe(this.onInputUpdate.bind(this))
-      input.valueSubscription.subscribe(this.onInputUpdate.bind(this))
+      input.valueSubscription.subscribe(this.push.bind(this))
     })
   }
 
-  protected onInputUpdate() {}
-}
+  abstract pull(): T
 
-export abstract class FunctionBlock extends BaseBlock {
-  static blockKind = BlockKinds.Function
+  private push() {
+    this.outputs[0].value = this.pull()
+  }
 }
 
 export abstract class GUIElementBlock extends BaseBlock {
@@ -53,22 +59,27 @@ export abstract class SinkBlock extends BaseBlock {
 
 export abstract class BeginBlock extends BaseBlock {
   static blockKind = BlockKinds.Begin
-  static endBlockClass: typeof EndBlock
 
-  endBlock: EndBlock
+  endBlock: EndBlock<any>
 
-  connect(endBlock: EndBlock) {
+  connect(endBlock: EndBlock<any>) {
     this.endBlock = endBlock
   }
 }
 
-export abstract class EndBlock extends BaseBlock {
+export abstract class EndBlock<T> extends BaseBlock {
   static blockKind = BlockKinds.End
   static beginBlockClass: typeof BeginBlock
+
+  abstract inputs: [Input<T>]
+  abstract outputs: [Output<T>]
+
+  abstract pull(): T
 }
 
 export type BlockClass
-  = typeof FunctionBlock
+  = typeof PushFunctionBlock
+  | typeof PushPullFunctionBlock
   | typeof GUIElementBlock
   | typeof SourceBlock
   | typeof SinkBlock

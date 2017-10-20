@@ -1,18 +1,19 @@
-import {FunctionBlock} from './BaseBlock'
+import {PushFunctionBlock} from './BaseBlock'
 import Input from '../Input'
 import Output from '../Output'
 
 
-export default class extends FunctionBlock {
+export default class extends PushFunctionBlock {
   static blockName = '固定'
 
-  inputs: Input<number>[] = [new Input<number>('A', this), new Input<number>('B', this)]
+  inputs: Input<number>[] = [new Input<number>('A', 0, this), new Input<number>('B', 0, this)]
   outputs: Output<number>[] = [new Output<number>('B', 0)]
 
   constructor() {
     super()
 
-    this.configure()
+    this.inputs[0].connectionSubscription.subscribe(this.onInputUpdate.bind(this))
+    this.inputs[0].valueSubscription.subscribe(this.onInputUpdate.bind(this))
   }
 
   onInputUpdate() {
