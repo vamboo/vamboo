@@ -3,6 +3,7 @@ import * as h from 'react-hyperscript'
 import Input from '../../lib/Input'
 import Output from '../../lib/Output'
 import Point from '../../lib/Point'
+import Subscription from '../../lib/Subscription'
 import arrowStore from '../../stores/ArrowStore'
 import * as canvasStyle from '../Canvas/style.styl'
 
@@ -11,24 +12,32 @@ interface PropTypes {
   input: Input<any>
 }
 
-export default class extends React.Component<PropTypes, {isEditable: boolean}> {
+interface StateTypes {
+  isEditable: boolean
+  value: any
+}
+
+export default class extends React.Component<PropTypes, StateTypes> {
   rerender = () => this.forceUpdate()
 
   constructor(props: PropTypes) {
     super(props)
     this.state = {
-      isEditable: props.input.connectionSubscription.value === null
+      isEditable: props.input.connectionSubscription.value === null,
+      value: this.props.input.initialValue
     }
   }
 
   componentDidMount() {
-    this.props.input.connectionSubscription.subscribe(this.rerender)
-    this.props.input.valueSubscription.subscribe(this.rerender)
+    this.props.input.connectionSubscription.subscribe(this.updateConnection)
+    this.props.input.pushSubscription.subscribe(this.updateValue)
+    this.props.input.pullSubscription.subscribe(this.updateValue)
   }
 
   componentWillUnmount() {
-    this.props.input.connectionSubscription.unsubscribe(this.rerender)
-    this.props.input.valueSubscription.unsubscribe(this.rerender)
+    this.props.input.connectionSubscription.unsubscribe(this.updateConnection)
+    this.props.input.pushSubscription.unsubscribe(this.updateValue)
+    this.props.input.pullSubscription.unsubscribe(this.updateValue)
   }
 
   render() {
@@ -37,7 +46,7 @@ export default class extends React.Component<PropTypes, {isEditable: boolean}> {
         h('div', {onClick: this.onClick.bind(this)}, this.props.input.name),
         h('input', {
           type: 'text',
-          value: this.props.input.value === null ? '' : this.props.input.value,
+          value: this.state.value === null ? '' : this.state.value,
           disabled: this.props.input.connectionSubscription.value !== null
             && this.props.input.connectionSubscription.value.name !== null,
           onChange: this.onTextBoxChange.bind(this)
@@ -61,5 +70,15 @@ export default class extends React.Component<PropTypes, {isEditable: boolean}> {
     } else {
       arrowStore.finish(this.props.input)
     }
+  }
+
+  updateValue = ({value}: Subscription<any>) => {
+    this.setState({value})
+  }
+
+  updateConnection = () => {
+    this.setState({
+      value: this.props.input.output.pushSubscription.value
+    })
   }
 }

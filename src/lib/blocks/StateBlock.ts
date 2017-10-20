@@ -8,21 +8,18 @@ export class Begin extends BeginBlock {
   static blockName = 'BEGIN 状態管理'
 
   inputs: Input<number>[] = [new Input<number>('ストリーム', 0, this), new Input<number>('初期状態', 0, this)]
-  outputs: Output<number>[] = [new Output<number>('新しい値', 0), new Output<number>('古い状態', 0)]
+  outputs: Output<number>[] = [new Output<number>('新しい値', 0, false), new Output<number>('古い状態', 0, false)]
 
   constructor() {
     super()
 
-    this.outputs.forEach(output => {
-      output.willPropagateUpdate = false
-    })
-    this.inputs[0].valueSubscription.subscribe(this.onNewValueCome.bind(this))
+    this.inputs[0].pushSubscription.subscribe(this.onNewValueCome.bind(this))
   }
 
-  onNewValueCome() {
-    this.outputs[0].value = this.inputs[0].value
-    this.outputs[1].value = this.endBlock.pull()
-    this.endBlock.outputs[0].value = this.outputs[1].value
+  onNewValueCome({value}: Subscription<number>) {
+    this.outputs[0].push(value)
+    this.outputs[1].push(this.endBlock.pull())
+    this.endBlock.outputs[0].push(this.outputs[1].pushSubscription.value)
   }
 }
 

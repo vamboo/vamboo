@@ -3,6 +3,7 @@ import Input from '../Input'
 import Output from '../Output'
 
 
+// TODO: PushPullFunctionBlockにする
 export default class extends PushFunctionBlock {
   static blockName = '固定'
 
@@ -13,12 +14,12 @@ export default class extends PushFunctionBlock {
     super()
 
     this.inputs[0].connectionSubscription.subscribe(this.onInputUpdate.bind(this))
-    this.inputs[0].valueSubscription.subscribe(this.onInputUpdate.bind(this))
+    this.inputs[0].pushSubscription.subscribe(this.onInputUpdate.bind(this))
   }
 
   onInputUpdate() {
-    if (this.inputs[1].value !== null) {
-      this.outputs[0].value = this.inputs[1].value!
+    if (this.inputs[1].pushSubscription.value !== null) {
+      this.outputs[0].push(this.inputs[1].pushSubscription.value!)
     }
   }
 }

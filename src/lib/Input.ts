@@ -8,27 +8,36 @@ import BaseBlock from './blocks/BaseBlock'
 export default class Input<T> {
   readonly id = _.uniqueId(this.constructor.name)
   connectionSubscription: Subscription<Output<T>>
-  valueSubscription: Subscription<T>
+  pushSubscription: Subscription<T>
+  pullSubscription: Subscription<T>
   // プログラムを組み立て、シリアライズし、それを走らせる、
   // という分離をちゃんとやっていればこんな複雑なSubscription同士の結びつきは起こらなかった...
 
-  constructor(public name: string, private initialValue: T, public block: BaseBlock) {
+  constructor(public name: string, public initialValue: T, public block: BaseBlock) {
     this.connectionSubscription = new Subscription(new Output(null, initialValue))
-    this.valueSubscription = new Subscription(initialValue)
+    this.pushSubscription = new Subscription(initialValue)
+    this.pullSubscription = new Subscription(initialValue)
   }
 
   connect(output: Output<T>) {
-    this.output.valueSubscription.unsubscribe(this.updateValue)
-    output.input = this
-    output.valueSubscription.subscribe(this.updateValue)
+    this.output.pushSubscription.unsubscribe(this.updatePushedValue)
+    this.output.pullSubscription.unsubscribe(this.updatePulledValue)
+    output.pushSubscription.subscribe(this.updatePushedValue)
+    output.pullSubscription.subscribe(this.updatePulledValue)
+
     this.connectionSubscription.value = output
+    output.input = this
+
+    this.pushSubscription.value = output.pushSubscription.value
   }
 
   disconnect() {
     if (this.isConnected()) {
-      this.output.input = null
-      this.output.valueSubscription.unsubscribe(this.updateValue)
+      this.output.pushSubscription.unsubscribe(this.updatePushedValue)
+      this.output.pullSubscription.unsubscribe(this.updatePulledValue)
+
       this.connectionSubscription.value = new Output(null, this.initialValue)
+      this.output.input = null
     }
   }
 
@@ -40,15 +49,15 @@ export default class Input<T> {
     return this.output.pull()
   }
 
-  get value(): T {
-    return this.output.value
-  }
-
   get output(): Output<T> {
     return this.connectionSubscription.value
   }
 
-  private updateValue = (outputValueSubscription: Subscription<T>) => {
-    this.valueSubscription.value = outputValueSubscription.value
+  private updatePushedValue = ({value}: Subscription<T>) => {
+    this.pushSubscription.value = value
+  }
+
+  private updatePulledValue = ({value}: Subscription<T>) => {
+    this.pullSubscription.value = value
   }
 }

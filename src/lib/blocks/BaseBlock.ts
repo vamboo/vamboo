@@ -31,14 +31,14 @@ export abstract class PushPullFunctionBlock<T> extends PushFunctionBlock {
 
   configure() {
     this.inputs.forEach(input => {
-      input.valueSubscription.subscribe(this.push.bind(this))
+      input.pushSubscription.subscribe(this.push.bind(this))
     })
   }
 
   abstract pull(): T
 
   private push() {
-    this.outputs[0].value = this.pull()
+    this.outputs[0].push(this.pull())
   }
 }
 

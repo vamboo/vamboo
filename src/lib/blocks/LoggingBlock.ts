@@ -11,10 +11,10 @@ export default class LoggingBlock extends SinkBlock {
   constructor() {
     super()
 
-    this.inputs[0].valueSubscription.subscribe(this.onInputUpdate.bind(this))
+    this.inputs[0].pushSubscription.subscribe(this.onInputUpdate.bind(this))
   }
 
   onInputUpdate() {
-    console.log('input updated:', this.inputs[0].value)
+    console.log('input updated:', this.inputs[0].pushSubscription.value)
   }
 }

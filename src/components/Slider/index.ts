@@ -13,6 +13,6 @@ export default class extends React.Component<PropTypes> {
   }
 
   onChange(event: Event) {
-    this.props.block.outputs[0].value = parseInt((event.target as any).value, 10)
+    this.props.block.outputs[0].push(parseInt((event.target as any).value, 10))
   }
 }

@@ -13,8 +13,8 @@ export default class extends PushFunctionBlock {
     super()
 
     this.inputs.forEach(input => {
-      input.valueSubscription.subscribe(() => {
-        this.outputs[0].value = input.value!
+      input.pushSubscription.subscribe(() => {
+        this.outputs[0].push(input.pushSubscription.value!)
       })
     })
   }

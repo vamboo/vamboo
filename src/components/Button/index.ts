@@ -10,14 +10,6 @@ interface PropTypes {
 export default class extends React.Component<PropTypes> {
   rerender = () => this.forceUpdate()
 
-  componentDidMount() {
-    this.props.block.inputs[0].valueSubscription.subscribe(this.rerender)
-  }
-
-  componentWillUnmount() {
-    this.props.block.inputs[0].valueSubscription.unsubscribe(this.rerender)
-  }
-
   render() {
     return h('input', {
       type: 'button',
@@ -27,6 +19,6 @@ export default class extends React.Component<PropTypes> {
   }
 
   onClick() {
-    this.props.block.outputs[0].value = (new Date).getTime()  // 仮
+    this.props.block.outputs[0].push((new Date).getTime())  // 仮
   }
 }

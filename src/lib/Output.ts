@@ -7,11 +7,12 @@ import {PushPullFunctionBlock} from './blocks/BaseBlock'
 export default class Output<T> {
   readonly id = _.uniqueId(this.constructor.name)
   input: Input<T> | null = null
-  willPropagateUpdate = true
-  valueSubscription: Subscription<T>
+  pushSubscription: Subscription<T>
+  pullSubscription: Subscription<T>
 
-  constructor(public name: string | null, initialValue: T) {
-    this.valueSubscription = new Subscription(initialValue)
+  constructor(public name: string | null, initialValue: T, private willPropagateUpdate = true) {
+    this.pushSubscription = new Subscription(initialValue)
+    this.pullSubscription = new Subscription(initialValue)
   }
 
   isAnonymous() {
@@ -32,29 +33,26 @@ export default class Output<T> {
     return this.input !== null
   }
 
-  pull() {
-    return this.value
-  }
-
-  get value() {
-    return this.valueSubscription.value
-  }
-
-  set value(newValue) {
+  push(value: T) {
     if (this.willPropagateUpdate) {
-      this.valueSubscription.value = newValue
+      this.pushSubscription.value = value
     } else {
-      this.valueSubscription._value = newValue
+      this.pushSubscription._value = value
     }
+  }
+
+  pull() {
+    return this.pushSubscription.value
   }
 }
 
 export class LazyOutput<T> extends Output<T> {
   constructor(name: string | null, initialValue: T, public block: PushPullFunctionBlock<T>) {
-    super(name, initialValue)
+    super(name, initialValue, true)
   }
 
   pull() {
-    return this.block.pull()
+    this.pullSubscription.value = this.block.pull()
+    return this.pullSubscription.value
   }
 }

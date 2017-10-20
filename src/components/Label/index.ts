@@ -13,18 +13,18 @@ export default class extends React.Component<PropTypes> {
   componentDidMount() {
     this.props.block.inputs.forEach(input => {
       input.connectionSubscription.subscribe(this.rerender)
-      input.valueSubscription.subscribe(this.rerender)
+      input.pushSubscription.subscribe(this.rerender)
     })
   }
 
   componentWillUnmount() {
     this.props.block.inputs.forEach(input => {
       input.connectionSubscription.unsubscribe(this.rerender)
-      input.valueSubscription.unsubscribe(this.rerender)
+      input.pushSubscription.unsubscribe(this.rerender)
     })
   }
 
   render() {
-    return h('div', this.props.block.inputs[0].value)
+    return h('div', this.props.block.inputs[0].pushSubscription.value)
   }
 }
