@@ -42,6 +42,10 @@ export default class Output<T> {
   }
 
   pull() {
+    if (!this.willPropagateUpdate) {
+      this.pullSubscription.value = this.pushSubscription.value
+    }
+
     return this.pushSubscription.value
   }
 }
