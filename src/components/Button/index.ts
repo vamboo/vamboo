@@ -13,7 +13,7 @@ export default class extends React.Component<PropTypes> {
   render() {
     return h('input', {
       type: 'button',
-      value: 'ボタン',  // TODO: fromStringを実装して可変にする
+      value: 'ボタン',  // TODO: Use this value
       onClick: this.onClick.bind(this)
     })
   }

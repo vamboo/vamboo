@@ -10,8 +10,6 @@ export default class Input<T> {
   connectionSubscription: Subscription<Output<T>>
   pushSubscription: Subscription<T>
   pullSubscription: Subscription<T>
-  // プログラムを組み立て、シリアライズし、それを走らせる、
-  // という分離をちゃんとやっていればこんな複雑なSubscription同士の結びつきは起こらなかった...
 
   constructor(public name: string, public initialValue: T, public block: BaseBlock) {
     this.connectionSubscription = new Subscription(new Output(null, initialValue))

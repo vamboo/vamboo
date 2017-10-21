@@ -63,13 +63,9 @@ export default class extends React.Component<PropTypes, StateTypes> {
   }
 
   onTextBoxBlur(event: Event) {
-    const currentTextBoxValue = parseInt((event.target as any).value, 10)
-    // Input<T>のTに対してfromStringみたいなのが定義されていれば良いんだろうけど、
-    // そんな型クラスみたいな仕組みを導入するのが面倒なので、一旦数字前提で進めます
+    const currentTextBoxValue = parseInt((event.target as any).value, 10)  // TODO: Support non-number input
     if (isNaN(currentTextBoxValue)) return
     this.props.input.connect(new Output(null, currentTextBoxValue))
-    // valueが変わらない無名Outputを作ってそこにInputを繋げることで定数Inputを実現する
-    // Outputのコンストラクタがその名前を引数として取るようにしたのは失敗だったかな...
   }
 
   onClick(event: MouseEvent) {

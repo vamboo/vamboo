@@ -2,7 +2,6 @@ import * as _ from 'lodash'
 import Subscription from '../lib/Subscription'
 
 
-// TODO: この状態管理機構にタイムトラベルデバッギング機能とか付けて売り出す
 export default class BaseStore {
   private subscription = new Subscription(new Map<string, any>())
   subscribe = this.subscription.subscribe.bind(this.subscription)

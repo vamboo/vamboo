@@ -10,7 +10,7 @@ import * as canvasStyle from '../Canvas/style.styl'
 export default class extends React.Component {
   rerender = () => this.forceUpdate()
 
-  componentDidMount() {  // TODO: 毎回書くのは面倒なのでStoreBindedComponentみたいな基底クラス作る
+  componentDidMount() {  // TODO: Create abstract class like StoreBindedComponent to reuse those methods
     arrowStore.subscribe(this.rerender)
   }
 
