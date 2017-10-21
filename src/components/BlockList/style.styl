@@ -1,11 +1,17 @@
 .component
+  display flex
   flex 1 0
+  flex-direction column
 
   ul
+    display flex
+    padding 0
+    margin 0
+    list-style none
+
     &:first-child
-      list-style none
-      padding 0
-      margin 0
+      flex 0 1
+      flex-direction row
 
       .tab
         background-color white
@@ -14,21 +20,28 @@
         background-color #f2f2f2
 
       li
+        flex 1 0
         border inset 1px #a3a3a3
         text-align center
-        display inline
         padding 10px
 
         &:hover
           background-color #f2f2f2
 
+        input[type="radio"]
+          display none
+
     &:last-child
+      flex 1 0
+      flex-direction column
+
       border inset 1px #a3a3a3
       border-radius 0 0 0.2em 0.2em
       background-color white
       overflow-y scroll
 
       li
+        flex 0 1
         margin 0
         border-bottom inset 1px #a3a3a3
         list-style none
