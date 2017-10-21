@@ -8,5 +8,5 @@ export default class extends GUIElementBlock {
   static drawer = Slider
 
   inputs = []
-  outputs = [new Output('値', 50)]
+  outputs = [new Output('結果', 50)]
 }
