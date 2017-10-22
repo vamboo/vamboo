@@ -5,10 +5,10 @@ import Subscription from '../Subscription'
 
 
 export class Begin extends BeginBlock {
-  static blockName = 'BEGIN 状態管理'
+  static blockName = 'BEGIN State'
 
-  inputs: Input<number>[] = [new Input<number>('値', 0, this), new Input<number>('初期状態', 0, this)]
-  outputs: Output<number>[] = [new Output<number>('値', 0, false), new Output<number>('古い状態', 0, false)]
+  inputs: Input<number>[] = [new Input<number>('value', 0, this), new Input<number>('initial state', 0, this)]
+  outputs: Output<number>[] = [new Output<number>('value', 0, false), new Output<number>('old state', 0, false)]
 
   constructor() {
     super()
@@ -29,11 +29,11 @@ export class Begin extends BeginBlock {
 }
 
 export class End extends EndBlock<number> {
-  static blockName = 'END 状態管理'
+  static blockName = 'END State'
   static beginBlockClass = Begin
 
-  inputs: [Input<number>] = [new Input<number>('新しい状態', 0, this)]
-  outputs: [Output<number>] = [new Output<number>('新しい状態', 0)]
+  inputs: [Input<number>] = [new Input<number>('new state', 0, this)]
+  outputs: [Output<number>] = [new Output<number>('new state', 0)]
 
   pull() {
     return this.inputs[0].pull()
