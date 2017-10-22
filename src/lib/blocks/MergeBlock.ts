@@ -4,10 +4,10 @@ import Output from '../Output'
 
 
 export default class extends PushFunctionBlock {
-  static blockName = 'マージ'
+  static blockName = 'Merge'
 
-  inputs: Input<number>[] = [new Input<number>('ストリーム1', 0, this), new Input<number>('ストリーム2', 0, this)]
-  outputs: Output<number>[] = [new Output<number>('結果', 0)]
+  inputs: Input<number>[] = [new Input<number>('stream1', 0, this), new Input<number>('stream2', 0, this)]
+  outputs: Output<number>[] = [new Output<number>('stream', 0)]
 
   constructor() {
     super()

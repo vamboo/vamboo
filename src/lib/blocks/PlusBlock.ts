@@ -6,8 +6,8 @@ import {LazyOutput} from '../Output'
 export default class PlusBlock extends PushPullFunctionBlock<number> {
   static blockName = '+'
 
-  inputs: Input<number>[] = [new Input<number>('値1', 0, this), new Input<number>('値2', 0, this)]
-  outputs: [LazyOutput<number>] = [new LazyOutput('結果', 0, this)]
+  inputs: Input<number>[] = [new Input<number>('value1', 0, this), new Input<number>('value2', 0, this)]
+  outputs: [LazyOutput<number>] = [new LazyOutput('result', 0, this)]
 
   constructor() {
     super()
