@@ -16,7 +16,7 @@ Running on webpack-dev-server:
 ```
 yarn run start
 ```
-## Autors & Maintainers
+## Authors & Maintainers
 * [tock203](https://github.com/tock203)
 * [sosukesuzuki](https://github.com/sosukesuzuki)
 
