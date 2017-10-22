@@ -5,9 +5,9 @@ import Label from '../../components/Label'
 
 
 export default class extends GUIElementBlock {
-  static blockName = 'ラベル'
+  static blockName = 'Label'
   static drawer = Label
 
-  inputs: Input<any>[] = [new Input('表示する文字列', '', this)]
-  outputs = []  // TODO: クリックとか
+  inputs: Input<any>[] = [new Input('value', '', this)]
+  outputs = []
 }

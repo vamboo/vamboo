@@ -5,9 +5,9 @@ import Button from '../../components/Button'
 
 
 export default class extends GUIElementBlock {
-  static blockName = 'ボタン'
+  static blockName = 'Button'
   static drawer = Button
 
-  inputs: Input<any>[] = [new Input<string>('ラベル', '', this)]
-  outputs = [new Output('クリック', 0)]
+  inputs: Input<any>[] = [new Input<string>('label', '', this)]
+  outputs = [new Output('click', 0)]
 }

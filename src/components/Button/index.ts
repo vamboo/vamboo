@@ -13,12 +13,12 @@ export default class extends React.Component<PropTypes> {
   render() {
     return h('input', {
       type: 'button',
-      value: 'ボタン',  // TODO: Use this value
+      value: 'Button',  // TODO: Use this value
       onClick: this.onClick.bind(this)
     })
   }
 
   onClick() {
-    this.props.block.outputs[0].push((new Date).getTime())  // 仮
+    this.props.block.outputs[0].push((new Date).getTime())  // means nothing
   }
 }
