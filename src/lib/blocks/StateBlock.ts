@@ -7,8 +7,8 @@ import Subscription from '../Subscription'
 export class Begin extends BeginBlock {
   static blockName = 'BEGIN 状態管理'
 
-  inputs: Input<number>[] = [new Input<number>('ストリーム', 0, this), new Input<number>('初期状態', 0, this)]
-  outputs: Output<number>[] = [new Output<number>('新しい値', 0, false), new Output<number>('古い状態', 0, false)]
+  inputs: Input<number>[] = [new Input<number>('値', 0, this), new Input<number>('初期状態', 0, this)]
+  outputs: Output<number>[] = [new Output<number>('値', 0, false), new Output<number>('古い状態', 0, false)]
 
   constructor() {
     super()
