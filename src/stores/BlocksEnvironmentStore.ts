@@ -10,6 +10,7 @@ import * as StateBlock from '../lib/blocks/StateBlock'
 import ButtonBlock from '../lib/blocks/ButtonBlock'
 import ConstBlock from '../lib/blocks/ConstBlock'
 import MergeBlock from '../lib/blocks/MergeBlock'
+import MultiplyBlock from '../lib/blocks/MultiplyBlock'
 
 
 class BlocksEnvironmentStore extends BaseStore {
@@ -21,7 +22,8 @@ class BlocksEnvironmentStore extends BaseStore {
     StateBlock.End,
     ButtonBlock,
     ConstBlock,
-    MergeBlock
+    MergeBlock,
+    MultiplyBlock
   ]
 
   constructor() {

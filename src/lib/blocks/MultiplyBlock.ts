@@ -4,10 +4,16 @@ import {LazyOutput} from '../Output'
 
 
 export default class MultiplyBlock extends PushPullFunctionBlock<number> {
-  static blockName = '*'
+  static blockName = '×'
 
-  inputs: Input<number>[] = [new Input<number>('operand1', 1, this), new Input<number>('operand2', 0, this)]
+  inputs: Input<number>[] = [new Input<number>('値1', 1, this), new Input<number>('値2', 1, this)]
   outputs: [LazyOutput<number>] = [new LazyOutput('結果', 1, this)]
+
+  constructor() {
+    super()
+
+    this.configure()
+  }
 
   pull() {
     return this.inputs[0].pull() * this.inputs[1].pull()
