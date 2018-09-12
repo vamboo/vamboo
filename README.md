@@ -4,3 +4,10 @@ WIP
 
 A functional, reactive, and visual programming language for web frontend.  
 Heavily inspired by Cycle.js and good old days of Elm <= 0.16.
+
+## Development
+```sh
+npm install
+npm run build
+npm start
+```

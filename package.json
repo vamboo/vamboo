@@ -4,7 +4,9 @@
   "description": "A functional, reactive, and visual programming language for web frontend.",
   "main": "src/main.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "start": "electron dist/main.js"
   },
   "repository": {
     "type": "git",
