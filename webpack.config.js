@@ -7,6 +7,17 @@ const common = {
       {
         test: /\.ts$/,
         use: 'ts-loader'
+      },
+      {
+        test: /\.rs$/,
+        use: {
+          loader: 'rust-native-wasm-loader',
+          options: {
+            wasmBindgen: {
+              wasm2es6js: true
+            }
+          }
+        }
       }
     ]
   },
