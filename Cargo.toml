@@ -1,0 +1,7 @@
+[package]
+name = "vamboo"
+version = "0.1.0"
+authors = ["tock203 <tick@tock.tech>"]
+edition = "2018"
+
+[dependencies]
