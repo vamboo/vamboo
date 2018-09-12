@@ -1,7 +1,15 @@
 #[macro_use]
 extern crate stdweb;
-use stdweb::web::alert;
 
 fn main() {
-    alert("Hello World from Rust!")
+    let piyo = |foo: String| -> String {
+        [foo, String::from("aiueo")].join(" ")
+    };
+
+    js! {
+        fetch("https://ipinfo.io").then(resp => resp.text()).then(json => {
+            var aba = @{piyo}(json);
+            console.log(aba);
+        })
+    }
 }
