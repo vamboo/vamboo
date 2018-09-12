@@ -13,9 +13,7 @@ const common = {
         use: {
           loader: 'rust-native-wasm-loader',
           options: {
-            wasmBindgen: {
-              wasm2es6js: true
-            }
+            cargoWeb: true
           }
         }
       }
