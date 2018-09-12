@@ -1,0 +1,19 @@
+{
+  "name": "vamboo",
+  "version": "0.1.0",
+  "description": "A functional, reactive, and visual programming language for web frontend.",
+  "main": "src/main.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vamboo/vamboo.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vamboo/vamboo/issues"
+  },
+  "homepage": "https://github.com/vamboo/vamboo#readme"
+}
