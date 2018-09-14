@@ -1,5 +1,6 @@
 #[macro_use]
 extern crate stdweb;
+mod stream;
 
 fn main() {
     let piyo = |foo: String| -> String {
