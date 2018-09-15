@@ -1,7 +1,7 @@
 {
   "name": "vamboo",
   "version": "0.1.0",
-  "description": "A functional, reactive, and visual programming language for web frontend.",
+  "description": "A functional, reactive, and statically-typed visual programming language for web frontend.",
   "main": "src/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
