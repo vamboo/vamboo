@@ -26,3 +26,19 @@ impl<'a, T, U> Observer<T> for MappedStream<'a, T, U> {
         self.notify(mapped)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn it_works() {
+        let mut stream = MappedStream::new(Box::new(|x| x + 1));
+        let mut mock_observer = MockObserver {
+            expects: 2
+        };
+        stream.add_observer(&mut mock_observer);
+
+        stream.on_notify(&1);
+    }
+}
