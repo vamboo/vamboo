@@ -8,7 +8,7 @@ pub struct MappedStream<'a, T, U: 'a> {
 impl<'a, T, U> MappedStream<'a, T, U> {
     pub fn new(f: Box<Fn(&T) -> U>) -> Self {
         MappedStream {
-            observers: vec![],
+            observers: Vec::with_capacity(1),
             f
         }
     }
