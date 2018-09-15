@@ -3,14 +3,12 @@ extern crate stdweb;
 mod stream;
 
 fn main() {
-    let piyo = |foo: String| -> String {
-        [foo, String::from("aiueo")].join(" ")
-    };
+  let piyo = |foo: String| -> String { [foo, String::from("aiueo")].join(" ") };
 
-    js! {
-        fetch("https://ipinfo.io").then(resp => resp.text()).then(json => {
-            var aba = @{piyo}(json);
-            console.log(aba);
-        })
-    }
+  js! {
+    fetch("https://ipinfo.io").then(resp => resp.text()).then(json => {
+      var aba = @{piyo}(json);
+        console.log(aba);
+    })
+  }
 }
