@@ -33,12 +33,15 @@ mod tests {
 
     #[test]
     fn it_works() {
-        let mut stream = MappedStream::new(Box::new(|x| x + 1));
-        let mut mock_observer = MockObserver {
-            expects: 2
-        };
-        stream.add_observer(&mut mock_observer);
+        // Given
+        let mut before_map = MappedStream::new(Box::new(|x| x + 100));
+        let mut after_map = MockObserver::new();
+        before_map.add_observer(&mut after_map);
 
-        stream.on_notify(&1);
+        // When
+        before_map.on_notify(&1);
+
+        // Then
+        assert!(after_map.on_notify.called_with(101));
     }
 }

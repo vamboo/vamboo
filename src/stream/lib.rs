@@ -2,18 +2,6 @@ pub trait Observer<T> {
     fn on_notify(&mut self, notification: &T);
 }
 
-#[cfg(test)]
-pub struct MockObserver<T> {
-    pub expects: T
-}
-
-#[cfg(test)]
-impl<T: std::fmt::Debug + std::cmp::PartialEq> Observer<T> for MockObserver<T> {
-    fn on_notify(&mut self, notification: &T) {
-        assert_eq!(*notification, self.expects)
-    }
-}
-
 pub trait Observable<'a, 'b: 'a, T: 'b> {
     fn observers(&'a mut self) -> &'a mut Vec<&'b mut Observer<T>>;
 
@@ -29,5 +17,29 @@ pub trait Observable<'a, 'b: 'a, T: 'b> {
 
     fn optimize_memory(&'a mut self) {
         self.observers().shrink_to_fit()
+    }
+}
+
+#[cfg(test)]
+use pseudo::Mock;
+
+#[cfg(test)]
+pub struct MockObserver<T: Copy> {
+    pub on_notify: Mock<T, ()>
+}
+
+#[cfg(test)]
+impl<T: Copy> MockObserver<T> {
+    pub fn new() -> MockObserver<T> {
+        MockObserver {
+            on_notify: Mock::default()
+        }
+    }
+}
+
+#[cfg(test)]
+impl<T: Copy> Observer<T> for MockObserver<T> {
+    fn on_notify(&mut self, notification: &T) {
+        self.on_notify.call(*notification)
     }
 }
