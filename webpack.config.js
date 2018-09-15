@@ -5,8 +5,22 @@ const common = {
   module: {
     rules: [
       {
-        test: /\.ts$/,
-        use: 'ts-loader'
+        test: /\.js$/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              [
+                '@babel/preset-env',
+                {
+                  targets: {
+                    chrome: '61'
+                  }
+                }
+              ]
+            ]
+          }
+        }
       },
       {
         test: /\.rs$/,
@@ -20,12 +34,12 @@ const common = {
     ]
   },
   resolve: {
-    extensions: ['.ts', '.js']
+    extensions: ['.js']
   }
 }
 
 const main = {
-  entry: './src/main.ts',
+  entry: './src/main.js',
   output: {
     filename: 'main.js'
   },
@@ -33,7 +47,7 @@ const main = {
 }
 
 const renderer = {
-  entry: './src/renderer.ts',
+  entry: './src/renderer.js',
   output: {
     filename: 'renderer.js'
   },
