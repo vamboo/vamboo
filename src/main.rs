@@ -1,6 +1,7 @@
 #[macro_use]
 extern crate stdweb;
-mod stream;
+mod runtime;
+use self::runtime::stream;
 
 fn main() {
   let piyo = |foo: String| -> String { [foo, String::from("aiueo")].join(" ") };
