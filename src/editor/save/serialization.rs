@@ -140,3 +140,168 @@ pub enum SubstituteWith {
 }
 
 pub type TypeTag = Vec<String>;
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  fn serialized() -> String {
+    "
+{
+  \"id\": \"local.example\",
+  \"function_definitions\": [
+    {
+      \"name\": \"double\",
+      \"argument_definitions\": [
+        {
+          \"name\": \"input\",
+          \"type_tag\": [\"number\"]
+        }
+      ],
+      \"return_definitions\": [
+        {
+          \"name\": \"output\",
+          \"type_tag\": [\"number\"]
+        }
+      ],
+      \"implementation\": [
+        {
+          \"definition\": {
+            \"package\": \"builtin\",
+            \"function\": \"add\"
+          },
+          \"argument_substitutions\": [
+            {
+              \"target\": \"operand1\",
+              \"with\": {
+                \"type\": \"Argument\",
+                \"definition\": {
+                  \"package\": \"local.example\",
+                  \"function\": \"double\"
+                },
+                \"argument\": \"input\"
+              }
+            },
+            {
+              \"target\": \"operand2\",
+              \"with\": {
+                \"type\": \"Argument\",
+                \"definition\": {
+                  \"package\": \"local.example\",
+                  \"function\": \"double\"
+                },
+                \"argument\": \"input\"
+              }
+            }
+          ]
+        }
+      ],
+      \"return_substitutions\": [
+        {
+          \"target\": \"output\",
+          \"with\": {
+            \"type\": \"Return\",
+            \"definition\": {
+              \"package\": \"local.example\",
+              \"function\": \"double\"
+            },
+            \"use_\": 0,
+            \"return_\": \"output\"
+          }
+        }
+      ]
+    }
+  ]
+}
+    ".replace(" ", "").replace("\n", "")
+  }
+
+  fn deserialized() -> EditablePackage {
+    EditablePackage {
+      id: PackageId::Local {
+        package: "example".to_string()
+      },
+      function_definitions: vec![
+        FunctionDefinition {
+          name: "double".to_string(),
+          argument_definitions: vec![
+            NameTypePair {
+              name: "input".to_string(),
+              type_tag: vec!["number".to_string()]
+            }
+          ],
+          return_definitions: vec![
+            NameTypePair {
+              name: "output".to_string(),
+              type_tag: vec!["number".to_string()]
+            }
+          ],
+          implementation: vec![
+            FunctionUse {
+              definition: FunctionDefinitionId {
+                package: PackageId::BuiltIn,
+                function: "add".to_string()
+              },
+              argument_substitutions: vec![
+                Substitution {
+                  target: "operand1".to_string(),
+                  with: SubstituteWith::Argument {
+                    definition: FunctionDefinitionId {
+                      package: PackageId::Local {
+                        package: "example".to_string()
+                      },
+                      function: "double".to_string()
+                    },
+                    argument: "input".to_string()
+                  }
+                },
+                Substitution {
+                  target: "operand2".to_string(),
+                  with: SubstituteWith::Argument {
+                    definition: FunctionDefinitionId {
+                      package: PackageId::Local {
+                        package: "example".to_string()
+                      },
+                      function: "double".to_string()
+                    },
+                    argument: "input".to_string()
+                  }
+                }
+              ]
+            }
+          ],
+          return_substitutions: vec![
+            Substitution {
+              target: "output".to_string(),
+              with: SubstituteWith::Return {
+                definition: FunctionDefinitionId {
+                  package: PackageId::Local {
+                    package: "example".to_string()
+                  },
+                  function: "double".to_string()
+                },
+                use_: 0,
+                return_: "output".to_string()
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+
+  #[test]
+  fn deserialize() {
+    let expected = deserialized();
+    let deserialized: EditablePackage = serde_json::from_str(&serialized()).unwrap();
+    assert_eq!(expected, deserialized);
+  }
+
+  #[test]
+  fn serialize() {
+    let expected = serialized();
+    let serialized = serde_json::to_string(&deserialized()).unwrap();
+    assert_eq!(expected, serialized);
+  }
+}
+
