@@ -147,7 +147,7 @@ pub struct FunctionDefinition {
   name: String,
   argument_definitions: Vec<NameTypePair>,
   return_definitions: Vec<NameTypePair>,
-  implementation: Vec<FunctionUse>,
+  implementation: Vec<FunctionCall>,
   return_substitutions: Vec<Substitution>
 }
 
@@ -158,32 +158,33 @@ pub struct NameTypePair {
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
-pub struct FunctionUse {
-  definition: FunctionDefinitionId,
+pub struct FunctionCall {
+  call: FunctionDefinitionId,
   argument_substitutions: Vec<Substitution>
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
 pub struct Substitution {
-  target: String,
+  substitute: String,
+  #[serde(flatten)]
   with: SubstituteWith
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
-#[serde(tag = "type")]
+#[serde(untagged)]
 pub enum SubstituteWith {
   Argument {
-    definition: FunctionDefinitionId,
-    argument: String
+    with_argument: String,
+    of_function: FunctionDefinitionId,
   },
   Return {
-    definition: FunctionDefinitionId,
-    use_: i32,
-    return_: String
+    with_return: String,
+    of_call: i32,
+    of_function: FunctionDefinitionId
   },
   Constant {
-    type_tag: TypeTag,
-    value: String
+    with_value: String,
+    of_type: TypeTag
   }
 }
 
@@ -214,36 +215,27 @@ mod tests {
       ],
       \"implementation\": [
         {
-          \"definition\": \"builtin.add\",
+          \"call\": \"builtin.add\",
           \"argument_substitutions\": [
             {
-              \"target\": \"operand1\",
-              \"with\": {
-                \"type\": \"Argument\",
-                \"definition\": \"local.example.double\",
-                \"argument\": \"input\"
-              }
+              \"substitute\": \"operand1\",
+              \"with_argument\": \"input\",
+              \"of_function\": \"local.example.double\"
             },
             {
-              \"target\": \"operand2\",
-              \"with\": {
-                \"type\": \"Argument\",
-                \"definition\": \"local.example.double\",
-                \"argument\": \"input\"
-              }
+              \"substitute\": \"operand2\",
+              \"with_argument\": \"input\",
+              \"of_function\": \"local.example.double\"
             }
           ]
         }
       ],
       \"return_substitutions\": [
         {
-          \"target\": \"output\",
-          \"with\": {
-            \"type\": \"Return\",
-            \"definition\": \"local.example.double\",
-            \"use_\": 0,
-            \"return_\": \"output\"
-          }
+          \"substitute\": \"output\",
+          \"with_return\": \"output\",
+          \"of_call\": 0,
+          \"of_function\": \"builtin.add\"
         }
       ]
     }
@@ -273,34 +265,34 @@ mod tests {
             }
           ],
           implementation: vec![
-            FunctionUse {
-              definition: FunctionDefinitionId {
+            FunctionCall {
+              call: FunctionDefinitionId {
                 package: PackageId::BuiltIn,
                 function: "add".to_string()
               },
               argument_substitutions: vec![
                 Substitution {
-                  target: "operand1".to_string(),
+                  substitute: "operand1".to_string(),
                   with: SubstituteWith::Argument {
-                    definition: FunctionDefinitionId {
+                    with_argument: "input".to_string(),
+                    of_function: FunctionDefinitionId {
                       package: PackageId::Local {
                         package: "example".to_string()
                       },
                       function: "double".to_string()
-                    },
-                    argument: "input".to_string()
+                    }
                   }
                 },
                 Substitution {
-                  target: "operand2".to_string(),
+                  substitute: "operand2".to_string(),
                   with: SubstituteWith::Argument {
-                    definition: FunctionDefinitionId {
+                    with_argument: "input".to_string(),
+                    of_function: FunctionDefinitionId {
                       package: PackageId::Local {
                         package: "example".to_string()
                       },
                       function: "double".to_string()
                     },
-                    argument: "input".to_string()
                   }
                 }
               ]
@@ -308,16 +300,15 @@ mod tests {
           ],
           return_substitutions: vec![
             Substitution {
-              target: "output".to_string(),
+              substitute: "output".to_string(),
               with: SubstituteWith::Return {
-                definition: FunctionDefinitionId {
-                  package: PackageId::Local {
-                    package: "example".to_string()
-                  },
-                  function: "double".to_string()
-                },
-                use_: 0,
-                return_: "output".to_string()
+                with_return: "output".to_string(),
+                of_call: 0,
+                // This exists for readability for humans. Programs never use this.
+                of_function: FunctionDefinitionId {
+                  package: PackageId::BuiltIn,
+                  function: "add".to_string()
+                }
               }
             }
           ]
