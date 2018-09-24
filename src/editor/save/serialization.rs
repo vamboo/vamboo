@@ -7,7 +7,7 @@ use serde::ser::{Serialize, Serializer};
 use serde::de::{Deserialize, Deserializer, Visitor};
 use failure::format_err;
 
-#[derive(Serialize, Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum PackageId {
   BuiltIn,
   Local {
@@ -16,6 +16,24 @@ pub enum PackageId {
   Market {
     user: String,
     package: String
+  }
+}
+
+impl fmt::Display for PackageId {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    let fully_qualified_name = match self {
+      PackageId::BuiltIn => "builtin".to_string(),
+      PackageId::Local { package } => format!("local.{}", package),
+      PackageId::Market { user, package } => format!("market.{}.{}", user, package)
+    };
+
+    write!(f, "{}", fully_qualified_name)
+  }
+}
+
+impl Serialize for PackageId {
+  fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+    serializer.serialize_str(&format!("{}", self))
   }
 }
 
