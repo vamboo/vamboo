@@ -160,7 +160,8 @@ pub struct NameTypePair {
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
 pub struct FunctionCall {
   call: FunctionDefinitionId,
-  argument_substitutions: Vec<Substitution>
+  argument_substitutions: Vec<Substitution>,
+  id: String
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
@@ -179,7 +180,7 @@ pub enum SubstituteWith {
   },
   Return {
     with_return: String,
-    of_call: i32,
+    of_call: String,
     of_function: FunctionDefinitionId
   },
   Constant {
@@ -227,14 +228,15 @@ mod tests {
               \"with_argument\": \"input\",
               \"of_function\": \"local.example.double\"
             }
-          ]
+          ],
+          \"id\": \"44c3e426f2a44f0092b990e53d668c3a\"
         }
       ],
       \"return_substitutions\": [
         {
           \"substitute\": \"output\",
           \"with_return\": \"output\",
-          \"of_call\": 0,
+          \"of_call\": \"44c3e426f2a44f0092b990e53d668c3a\",
           \"of_function\": \"builtin.add\"
         }
       ]
@@ -295,7 +297,8 @@ mod tests {
                     },
                   }
                 }
-              ]
+              ],
+              id: "44c3e426f2a44f0092b990e53d668c3a".to_string()
             }
           ],
           return_substitutions: vec![
@@ -303,7 +306,7 @@ mod tests {
               substitute: "output".to_string(),
               with: SubstituteWith::Return {
                 with_return: "output".to_string(),
-                of_call: 0,
+                of_call: "44c3e426f2a44f0092b990e53d668c3a".to_string(),
                 // This exists for readability for humans. Programs never use this.
                 of_function: FunctionDefinitionId {
                   package: PackageId::BuiltIn,
