@@ -82,10 +82,46 @@ impl<'de> Visitor<'de> for PackageIdVisitor {
   }
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
+#[derive(Serialize, Debug, PartialEq, Eq)]
 pub struct FunctionDefinitionId {
   package: PackageId,
   function: String
+}
+
+impl FromStr for FunctionDefinitionId {
+  type Err = failure::Error;
+
+  fn from_str(s: &str) -> Result<Self, Self::Err> {
+    let mut segments = s.rsplitn(2, ".");
+    let mut next_segment = || segments.next().ok_or(
+      format_err!("Function definition id does not have enough segments: {}", s)
+    );
+
+    let function = next_segment()?.to_string();
+    let package = next_segment()?.parse::<PackageId>()?;
+
+    Ok(FunctionDefinitionId { package, function })
+  }
+}
+
+impl<'de> Deserialize<'de> for FunctionDefinitionId {
+  fn deserialize<D: Deserializer<'de>>(deserializer: D) -> Result<FunctionDefinitionId, D::Error> {
+    deserializer.deserialize_str(FunctionDefinitionIdVisitor)
+  }
+}
+
+struct FunctionDefinitionIdVisitor;
+
+impl<'de> Visitor<'de> for FunctionDefinitionIdVisitor {
+  type Value = FunctionDefinitionId;
+
+  fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+    formatter.write_str("a function definition id")
+  }
+
+  fn visit_str<E: serde::de::Error>(self, value: &str) -> Result<Self::Value, E> {
+    value.parse::<Self::Value>().map_err(serde::de::Error::custom)
+  }
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
@@ -166,19 +202,13 @@ mod tests {
       ],
       \"implementation\": [
         {
-          \"definition\": {
-            \"package\": \"builtin\",
-            \"function\": \"add\"
-          },
+          \"definition\": \"builtin.add\",
           \"argument_substitutions\": [
             {
               \"target\": \"operand1\",
               \"with\": {
                 \"type\": \"Argument\",
-                \"definition\": {
-                  \"package\": \"local.example\",
-                  \"function\": \"double\"
-                },
+                \"definition\": \"local.example.double\",
                 \"argument\": \"input\"
               }
             },
@@ -186,10 +216,7 @@ mod tests {
               \"target\": \"operand2\",
               \"with\": {
                 \"type\": \"Argument\",
-                \"definition\": {
-                  \"package\": \"local.example\",
-                  \"function\": \"double\"
-                },
+                \"definition\": \"local.example.double\",
                 \"argument\": \"input\"
               }
             }
@@ -201,10 +228,7 @@ mod tests {
           \"target\": \"output\",
           \"with\": {
             \"type\": \"Return\",
-            \"definition\": {
-              \"package\": \"local.example\",
-              \"function\": \"double\"
-            },
+            \"definition\": \"local.example.double\",
             \"use_\": 0,
             \"return_\": \"output\"
           }
