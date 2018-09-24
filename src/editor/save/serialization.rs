@@ -82,10 +82,22 @@ impl<'de> Visitor<'de> for PackageIdVisitor {
   }
 }
 
-#[derive(Serialize, Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct FunctionDefinitionId {
   package: PackageId,
   function: String
+}
+
+impl fmt::Display for FunctionDefinitionId {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    write!(f, "{}.{}", self.package, self.function)
+  }
+}
+
+impl Serialize for FunctionDefinitionId {
+  fn serialize<S: Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+    serializer.serialize_str(&format!("{}", self))
+  }
 }
 
 impl FromStr for FunctionDefinitionId {
@@ -94,7 +106,7 @@ impl FromStr for FunctionDefinitionId {
   fn from_str(s: &str) -> Result<Self, Self::Err> {
     let mut segments = s.rsplitn(2, ".");
     let mut next_segment = || segments.next().ok_or(
-      format_err!("Function definition id does not have enough segments: {}", s)
+      format_err!("Invalid format in function definition id: {}", s)
     );
 
     let function = next_segment()?.to_string();
