@@ -7,9 +7,11 @@ use std::io::prelude::*;
 
 mod runtime;
 use self::runtime::stream;
+use self::runtime::vm;
 mod editor;
 use self::editor::save::serialization::PackageId;
 extern crate serde_json;
+
 
 fn main() {
   let package_id = PackageId::BuiltIn;
