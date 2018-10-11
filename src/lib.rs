@@ -1,7 +1,5 @@
 #![feature(int_to_from_bytes)]
 #[macro_use]
-extern crate stdweb;
-#[macro_use]
 extern crate serde_derive;
 use std::fs::File;
 use std::io::prelude::*;
