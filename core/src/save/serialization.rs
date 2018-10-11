@@ -140,7 +140,7 @@ impl<'de> Visitor<'de> for FunctionDefinitionIdVisitor {
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
-pub struct Root {
+pub struct SavedPackage {
   version: u32,
   package: EditablePackage
 }
@@ -261,8 +261,8 @@ mod tests {
     ".replace(" ", "").replace("\n", "")
   }
 
-  fn deserialized() -> Root {
-    Root {
+  fn deserialized() -> SavedPackage {
+    SavedPackage {
       version: 1,
       package: EditablePackage {
         id: PackageId::Local {
@@ -341,7 +341,7 @@ mod tests {
   #[wasm_bindgen_test]
   fn deserialize() {
     let expected = deserialized();
-    let deserialized: Root = serde_json::from_str(&serialized()).unwrap();
+    let deserialized: SavedPackage = serde_json::from_str(&serialized()).unwrap();
     assert_eq!(expected, deserialized);
   }
 
