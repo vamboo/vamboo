@@ -8,6 +8,9 @@ use serde::de::{Deserialize, Deserializer, Visitor};
 extern crate failure;
 use failure::format_err;
 
+extern crate uuid;
+use uuid::Uuid;
+
 extern crate serde_json;
 
 #[derive(Debug, PartialEq, Eq)]
@@ -170,7 +173,7 @@ pub struct NameTypePair {
 pub struct FunctionCall {
   pub call: FunctionDefinitionId,
   pub argument_substitutions: Vec<Substitution>,
-  pub id: String
+  pub id: Uuid
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
@@ -189,7 +192,7 @@ pub enum SubstituteWith {
   },
   Return {
     with_return: String,
-    of_call: String,
+    of_call: Uuid,
     of_function: FunctionDefinitionId
   },
   Constant {
@@ -243,14 +246,14 @@ mod tests {
                 \"of_function\": \"local.example.double\"
               }
             ],
-            \"id\": \"44c3e426f2a44f0092b990e53d668c3a\"
+            \"id\": \"44c3e426-f2a4-4f00-92b9-90e53d668c3a\"
           }
         ],
         \"return_substitutions\": [
           {
             \"substitute\": \"output\",
             \"with_return\": \"output\",
-            \"of_call\": \"44c3e426f2a44f0092b990e53d668c3a\",
+            \"of_call\": \"44c3e426-f2a4-4f00-92b9-90e53d668c3a\",
             \"of_function\": \"builtin.add\"
           }
         ]
@@ -315,7 +318,7 @@ mod tests {
                     }
                   }
                 ],
-                id: "44c3e426f2a44f0092b990e53d668c3a".to_string()
+                id: Uuid::parse_str("44c3e426f2a44f0092b990e53d668c3a").unwrap()
               }
             ],
             return_substitutions: vec![
@@ -323,7 +326,7 @@ mod tests {
                 substitute: "output".to_string(),
                 with: SubstituteWith::Return {
                   with_return: "output".to_string(),
-                  of_call: "44c3e426f2a44f0092b990e53d668c3a".to_string(),
+                  of_call: Uuid::parse_str("44c3e426f2a44f0092b990e53d668c3a").unwrap(),
                   // This exists for readability for humans. Programs never use this.
                   of_function: FunctionDefinitionId {
                     package: PackageId::BuiltIn,
