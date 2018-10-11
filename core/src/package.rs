@@ -87,8 +87,8 @@ impl<'de> Visitor<'de> for PackageIdVisitor {
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct FunctionDefinitionId {
-  package: PackageId,
-  function: String
+  pub package: PackageId,
+  pub function: String
 }
 
 impl fmt::Display for FunctionDefinitionId {
@@ -141,43 +141,43 @@ impl<'de> Visitor<'de> for FunctionDefinitionIdVisitor {
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
 pub struct SavedPackage {
-  version: u32,
-  package: EditablePackage
+  pub version: u32,
+  pub package: EditablePackage
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
 pub struct EditablePackage {
-  id: PackageId,
-  function_definitions: Vec<FunctionDefinition>
+  pub id: PackageId,
+  pub function_definitions: Vec<FunctionDefinition>
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
 pub struct FunctionDefinition {
-  name: String,
-  argument_definitions: Vec<NameTypePair>,
-  return_definitions: Vec<NameTypePair>,
-  implementation: Vec<FunctionCall>,
-  return_substitutions: Vec<Substitution>
+  pub name: String,
+  pub argument_definitions: Vec<NameTypePair>,
+  pub return_definitions: Vec<NameTypePair>,
+  pub implementation: Vec<FunctionCall>,
+  pub return_substitutions: Vec<Substitution>
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
 pub struct NameTypePair {
-  name: String,
-  type_tag: TypeTag
+  pub name: String,
+  pub type_tag: TypeTag
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
 pub struct FunctionCall {
-  call: FunctionDefinitionId,
-  argument_substitutions: Vec<Substitution>,
-  id: String
+  pub call: FunctionDefinitionId,
+  pub argument_substitutions: Vec<Substitution>,
+  pub id: String
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
 pub struct Substitution {
-  substitute: String,
+  pub substitute: String,
   #[serde(flatten)]
-  with: SubstituteWith
+  pub with: SubstituteWith
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
@@ -204,7 +204,7 @@ pub type TypeTag = Vec<String>;
 mod tests {
   extern crate wasm_bindgen_test;
   use wasm_bindgen_test::*;
-	
+
   use super::*;
 
   fn serialized() -> String {
