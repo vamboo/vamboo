@@ -1,3 +1,6 @@
+extern crate wasm_bindgen_test;
+use wasm_bindgen_test::*;
+
 use super::lib::*;
 
 pub struct MappedStream<'a, T, U: 'a> {
@@ -31,7 +34,7 @@ impl<'a, T, U> Observer<T> for MappedStream<'a, T, U> {
 mod tests {
   use super::*;
 
-  #[test]
+  #[wasm_bindgen_test]
   fn it_works() {
     // Given
     let mut before_map = MappedStream::new(Box::new(|x| x + 100));

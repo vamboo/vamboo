@@ -1,11 +1,17 @@
 use std::fmt;
 use std::str::FromStr;
+
 extern crate serde;
-extern crate serde_json;
-extern crate failure;
 use serde::ser::{Serialize, Serializer};
 use serde::de::{Deserialize, Deserializer, Visitor};
+
+extern crate failure;
 use failure::format_err;
+
+extern crate wasm_bindgen_test;
+use wasm_bindgen_test::*;
+
+extern crate serde_json;
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum PackageId {
@@ -320,14 +326,14 @@ mod tests {
     }
   }
 
-  #[test]
+  #[wasm_bindgen_test]
   fn deserialize() {
     let expected = deserialized();
     let deserialized: EditablePackage = serde_json::from_str(&serialized()).unwrap();
     assert_eq!(expected, deserialized);
   }
 
-  #[test]
+  #[wasm_bindgen_test]
   fn serialize() {
     let expected = serialized();
     let serialized = serde_json::to_string(&deserialized()).unwrap();
