@@ -169,12 +169,20 @@ pub struct NameTypePair {
   pub type_tag: TypeTag
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct FunctionCall {
   pub call: FunctionDefinitionId,
   pub argument_substitutions: Vec<Substitution>,
   pub id: Uuid
 }
+
+impl PartialEq for FunctionCall {
+  fn eq(&self, other: &FunctionCall) -> bool {
+    self.id == other.id
+  }
+}
+
+impl Eq for FunctionCall {}
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
 pub struct Substitution {
