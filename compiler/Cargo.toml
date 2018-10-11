@@ -5,7 +5,9 @@ authors = ["tock203 <tick@tock.tech>"]
 edition = "2018"
 
 [lib]
-crate-type = ["cdylib", "rlib"]
+proc-macro = true
 
 [dependencies]
 core = { path = "../core" }
+syn = "0.15"
+quote = "0.6"

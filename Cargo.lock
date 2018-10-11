@@ -34,6 +34,8 @@ name = "compiler"
 version = "0.1.0"
 dependencies = [
  "core 0.1.0",
+ "quote 0.6.8 (registry+https://github.com/rust-lang/crates.io-index)",
+ "syn 0.15.9 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -148,6 +150,7 @@ dependencies = [
 name = "runtime"
 version = "0.1.0"
 dependencies = [
+ "compiler 0.1.0",
  "pseudo 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "wasm-bindgen 0.2.25 (registry+https://github.com/rust-lang/crates.io-index)",
  "wasm-bindgen-test 0.2.25 (registry+https://github.com/rust-lang/crates.io-index)",
