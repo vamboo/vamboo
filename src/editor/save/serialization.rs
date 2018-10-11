@@ -143,6 +143,12 @@ impl<'de> Visitor<'de> for FunctionDefinitionIdVisitor {
 }
 
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
+pub struct Root {
+  version: u32,
+  package: EditablePackage
+}
+
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
 pub struct EditablePackage {
   id: PackageId,
   function_definitions: Vec<FunctionDefinition>
@@ -204,132 +210,138 @@ mod tests {
   fn serialized() -> String {
     "
 {
-  \"id\": \"local.example\",
-  \"function_definitions\": [
-    {
-      \"name\": \"double\",
-      \"argument_definitions\": [
-        {
-          \"name\": \"input\",
-          \"type_tag\": [\"number\"]
-        }
-      ],
-      \"return_definitions\": [
-        {
-          \"name\": \"output\",
-          \"type_tag\": [\"number\"]
-        }
-      ],
-      \"implementation\": [
-        {
-          \"call\": \"builtin.add\",
-          \"argument_substitutions\": [
-            {
-              \"substitute\": \"operand1\",
-              \"with_argument\": \"input\",
-              \"of_function\": \"local.example.double\"
-            },
-            {
-              \"substitute\": \"operand2\",
-              \"with_argument\": \"input\",
-              \"of_function\": \"local.example.double\"
-            }
-          ],
-          \"id\": \"44c3e426f2a44f0092b990e53d668c3a\"
-        }
-      ],
-      \"return_substitutions\": [
-        {
-          \"substitute\": \"output\",
-          \"with_return\": \"output\",
-          \"of_call\": \"44c3e426f2a44f0092b990e53d668c3a\",
-          \"of_function\": \"builtin.add\"
-        }
-      ]
-    }
-  ]
+  \"version\": 1,
+  \"package\": {
+    \"id\": \"local.example\",
+    \"function_definitions\": [
+      {
+        \"name\": \"double\",
+        \"argument_definitions\": [
+          {
+            \"name\": \"input\",
+            \"type_tag\": [\"number\"]
+          }
+        ],
+        \"return_definitions\": [
+          {
+            \"name\": \"output\",
+            \"type_tag\": [\"number\"]
+          }
+        ],
+        \"implementation\": [
+          {
+            \"call\": \"builtin.add\",
+            \"argument_substitutions\": [
+              {
+                \"substitute\": \"operand1\",
+                \"with_argument\": \"input\",
+                \"of_function\": \"local.example.double\"
+              },
+              {
+                \"substitute\": \"operand2\",
+                \"with_argument\": \"input\",
+                \"of_function\": \"local.example.double\"
+              }
+            ],
+            \"id\": \"44c3e426f2a44f0092b990e53d668c3a\"
+          }
+        ],
+        \"return_substitutions\": [
+          {
+            \"substitute\": \"output\",
+            \"with_return\": \"output\",
+            \"of_call\": \"44c3e426f2a44f0092b990e53d668c3a\",
+            \"of_function\": \"builtin.add\"
+          }
+        ]
+      }
+    ]
+  }
 }
     ".replace(" ", "").replace("\n", "")
   }
 
-  fn deserialized() -> EditablePackage {
-    EditablePackage {
-      id: PackageId::Local {
-        package: "example".to_string()
-      },
-      function_definitions: vec![
-        FunctionDefinition {
-          name: "double".to_string(),
-          argument_definitions: vec![
-            NameTypePair {
-              name: "input".to_string(),
-              type_tag: vec!["number".to_string()]
-            }
-          ],
-          return_definitions: vec![
-            NameTypePair {
-              name: "output".to_string(),
-              type_tag: vec!["number".to_string()]
-            }
-          ],
-          implementation: vec![
-            FunctionCall {
-              call: FunctionDefinitionId {
-                package: PackageId::BuiltIn,
-                function: "add".to_string()
-              },
-              argument_substitutions: vec![
-                Substitution {
-                  substitute: "operand1".to_string(),
-                  with: SubstituteWith::Argument {
-                    with_argument: "input".to_string(),
-                    of_function: FunctionDefinitionId {
-                      package: PackageId::Local {
-                        package: "example".to_string()
-                      },
-                      function: "double".to_string()
-                    }
-                  }
-                },
-                Substitution {
-                  substitute: "operand2".to_string(),
-                  with: SubstituteWith::Argument {
-                    with_argument: "input".to_string(),
-                    of_function: FunctionDefinitionId {
-                      package: PackageId::Local {
-                        package: "example".to_string()
-                      },
-                      function: "double".to_string()
-                    },
-                  }
-                }
-              ],
-              id: "44c3e426f2a44f0092b990e53d668c3a".to_string()
-            }
-          ],
-          return_substitutions: vec![
-            Substitution {
-              substitute: "output".to_string(),
-              with: SubstituteWith::Return {
-                with_return: "output".to_string(),
-                of_call: "44c3e426f2a44f0092b990e53d668c3a".to_string(),
-                // This exists for readability for humans. Programs never use this.
-                of_function: FunctionDefinitionId {
+  fn deserialized() -> Root {
+    Root {
+      version: 1,
+      package: EditablePackage {
+        id: PackageId::Local {
+          package: "example".to_string()
+        },
+        function_definitions: vec![
+          FunctionDefinition {
+            name: "double".to_string(),
+            argument_definitions: vec![
+              NameTypePair {
+                name: "input".to_string(),
+                type_tag: vec!["number".to_string()]
+              }
+            ],
+            return_definitions: vec![
+              NameTypePair {
+                name: "output".to_string(),
+                type_tag: vec!["number".to_string()]
+              }
+            ],
+            implementation: vec![
+              FunctionCall {
+                call: FunctionDefinitionId {
                   package: PackageId::BuiltIn,
                   function: "add".to_string()
+                },
+                argument_substitutions: vec![
+                  Substitution {
+                    substitute: "operand1".to_string(),
+                    with: SubstituteWith::Argument {
+                      with_argument: "input".to_string(),
+                      of_function: FunctionDefinitionId {
+                        package: PackageId::Local {
+                          package: "example".to_string()
+                        },
+                        function: "double".to_string()
+                      }
+                    }
+                  },
+                  Substitution {
+                    substitute: "operand2".to_string(),
+                    with: SubstituteWith::Argument {
+                      with_argument: "input".to_string(),
+                      of_function: FunctionDefinitionId {
+                        package: PackageId::Local {
+                          package: "example".to_string()
+                        },
+                        function: "double".to_string()
+                      },
+                    }
+                  }
+                ],
+                id: "44c3e426f2a44f0092b990e53d668c3a".to_string()
+              }
+            ],
+            return_substitutions: vec![
+              Substitution {
+                substitute: "output".to_string(),
+                with: SubstituteWith::Return {
+                  with_return: "output".to_string(),
+                  of_call: "44c3e426f2a44f0092b990e53d668c3a".to_string(),
+                  // This exists for readability for humans. Programs never use this.
+                  of_function: FunctionDefinitionId {
+                    package: PackageId::BuiltIn,
+                    function: "add".to_string()
+                  }
                 }
               }
-            }
-          ]
-        }
-      ]
+            ]
+          }
+        ]
+      }
     }
   }
 
   #[wasm_bindgen_test]
   fn deserialize() {
     let expected = deserialized();
-    let deserialized: EditablePackage = serde_json::from_str(&serialized()).unwrap();
+    let deserialized: Root = serde_json::from_str(&serialized()).unwrap();
     assert_eq!(expected, deserialized);
   }
 
