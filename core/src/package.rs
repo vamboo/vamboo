@@ -184,6 +184,12 @@ impl PartialEq for FunctionCall {
 
 impl Eq for FunctionCall {}
 
+impl std::hash::Hash for FunctionCall {
+  fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+    self.id.hash(state);
+  }
+}
+
 #[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
 pub struct Substitution {
   pub substitute: String,
