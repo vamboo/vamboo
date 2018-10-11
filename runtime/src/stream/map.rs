@@ -1,6 +1,3 @@
-extern crate wasm_bindgen_test;
-use wasm_bindgen_test::*;
-
 use super::lib::*;
 
 pub struct MappedStream<'a, T, U: 'a> {
@@ -32,6 +29,9 @@ impl<'a, T, U> Observer<T> for MappedStream<'a, T, U> {
 
 #[cfg(test)]
 mod tests {
+  extern crate wasm_bindgen_test;
+  use wasm_bindgen_test::*;
+
   use super::*;
 
   #[wasm_bindgen_test]

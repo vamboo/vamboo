@@ -4,7 +4,7 @@
   "description": "A functional, reactive, and statically-typed visual programming language for web frontend.",
   "main": "src/main.js",
   "scripts": {
-    "test": "wasm-pack test --node",
+    "test": "echo core compiler runtime editor | xargs -n1 wasm-pack test --node",
     "build": "webpack",
     "start": "electron dist/main.js"
   },

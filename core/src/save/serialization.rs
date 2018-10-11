@@ -8,9 +8,6 @@ use serde::de::{Deserialize, Deserializer, Visitor};
 extern crate failure;
 use failure::format_err;
 
-extern crate wasm_bindgen_test;
-use wasm_bindgen_test::*;
-
 extern crate serde_json;
 
 #[derive(Debug, PartialEq, Eq)]
@@ -205,6 +202,9 @@ pub type TypeTag = Vec<String>;
 
 #[cfg(test)]
 mod tests {
+  extern crate wasm_bindgen_test;
+  use wasm_bindgen_test::*;
+	
   use super::*;
 
   fn serialized() -> String {

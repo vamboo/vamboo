@@ -1,0 +1,11 @@
+[package]
+name = "compiler"
+version = "0.1.0"
+authors = ["tock203 <tick@tock.tech>"]
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+core = { path = "../core" }
