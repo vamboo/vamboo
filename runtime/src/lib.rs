@@ -1,10 +1,11 @@
+#![feature(proc_macro_hygiene)]
 extern crate compiler;
 
 pub mod stream;
 
 #[compiler::inject]
-struct ExecutablePackage {}
+mod executable_package {}
 
-fn hoge() -> ExecutablePackage {
-  ExecutablePackage::new()
+fn main() {
+  executable_package::main()
 }

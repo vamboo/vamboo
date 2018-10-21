@@ -27,8 +27,8 @@ extern crate core;
 pub fn inject(_: TokenStream, input: TokenStream) -> TokenStream {
   let item = syn::parse(input.clone()).expect("failed to parse");
 
-  let struct_name = match item {
-    syn::Item::Struct(struct_item) => struct_item.ident,
+  let mod_ident = match item {
+    syn::Item::Mod(item) => item.ident,
     _ => panic!("expects struct")
   };
 
@@ -61,16 +61,16 @@ pub fn inject(_: TokenStream, input: TokenStream) -> TokenStream {
   }).fold(String::new(), |acc, tokens: proc_macro2::TokenStream| format!("{}{}", acc, tokens)).parse().unwrap();
 
   let output = quote! {
-    impl #struct_name {
-      fn main() {
+    mod #mod_ident {
+      pub fn main() {
         #tokens
       }
     }
   };
 
-  println!("{}{}", input.clone(), output.clone());
+  println!("{}", output);
 
-  format!("{}{}", input, output).parse().unwrap()
+  output.into()
 }
 
 fn open() -> core::EditablePackage {
