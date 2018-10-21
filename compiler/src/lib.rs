@@ -32,6 +32,8 @@ pub fn inject(_: TokenStream, input: TokenStream) -> TokenStream {
 fn open() -> EditablePackage {
   let path = std::env::var("VAMBOO_COMPILATION_TARGET").expect("$VAMBOO_COMPILATION_TARGET not set");
   let contents = std::fs::read_to_string(path).expect("$VAMBOO_COMPILATION_TARGET could not be read");
-  let deserialized: SavedPackage = serde_json::from_str(&contents).expect("$VAMBOO_COMPILATION_TARGET is not valid JSON");
+  let deserialized: SavedPackage =
+    serde_json::from_str(&contents).expect("$VAMBOO_COMPILATION_TARGET is not valid JSON");
+
   deserialized.package
 }

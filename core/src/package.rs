@@ -19,7 +19,7 @@ use petgraph::graph::NodeIndex;
 
 extern crate serde_json;
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub enum PackageId {
   BuiltIn,
   Local {
@@ -94,7 +94,7 @@ impl<'de> Visitor<'de> for PackageIdVisitor {
   }
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub struct FunctionDefinitionId {
   pub package: PackageId,
   pub function: String
@@ -169,20 +169,20 @@ pub struct FunctionDefinition {
   pub return_substitutions: Vec<Substitution>
 }
 
-impl From<FunctionDefinition> for Graph<Uuid, ()> {
+impl From<FunctionDefinition> for Graph<FunctionCall, ()> {
   fn from(definition: FunctionDefinition) -> Self {
     let mut node_ids: HashMap<Uuid, NodeIndex> = HashMap::new();
     let mut calculation_graph = Graph::new();
 
     for call in definition.implementation.iter() {
-      let node_id = calculation_graph.add_node(call.id);
+      let node_id = calculation_graph.add_node(call.clone());
       node_ids.insert(call.id, node_id);
     }
 
     for call in definition.implementation {
       for substitution in call.argument_substitutions {
         match substitution.with {
-          SubstituteWith::Return { with_return, of_call, of_function } => {
+          SubstituteWith::Return { of_call, with_return: _, of_function: _ } => {
             let node_id = node_ids.get(&call.id).unwrap();
             let depends_on = node_ids.get(&of_call).unwrap();
             calculation_graph.add_edge(*node_id, *depends_on, ());
@@ -191,6 +191,7 @@ impl From<FunctionDefinition> for Graph<Uuid, ()> {
         }
       }
     }
+
     calculation_graph
   }
 }
@@ -201,7 +202,7 @@ pub struct NameTypePair {
   pub type_tag: TypeTag
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct FunctionCall {
   pub call: FunctionDefinitionId,
   pub argument_substitutions: Vec<Substitution>,
@@ -224,14 +225,14 @@ impl Hash for FunctionCall {
   }
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Clone)]
 pub struct Substitution {
   pub substitute: String,
   #[serde(flatten)]
   pub with: SubstituteWith
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Clone)]
 #[serde(untagged)]
 pub enum SubstituteWith {
   Argument {
