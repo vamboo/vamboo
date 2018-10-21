@@ -31,11 +31,27 @@ pub fn inject(_: proc_macro::TokenStream, input: proc_macro::TokenStream) -> pro
     _ => panic!("expects struct")
   };
 
-  let mut editable_package = open();
+  let editable_package = open();
+  let tokens = compile(editable_package);
+
+  let output = quote! {
+    mod #mod_ident {
+      pub fn main() {
+        #tokens
+      }
+    }
+  };
+
+  println!("{}", output);
+
+  output.into()
+}
+
+fn compile(mut editable_package: core::EditablePackage) -> TokenStream {
   let main = editable_package.function_definitions.pop().unwrap();
   let calculation_graph = construct_calculation_graph(main);
   let mut node_ids = toposort(&calculation_graph, None).expect("infinite recursion detected");
-  
+
   let return_node_id = node_ids.drain(0..1).next().unwrap();
   let return_node = calculation_graph.node_weight(return_node_id).unwrap();
 
@@ -59,17 +75,7 @@ pub fn inject(_: proc_macro::TokenStream, input: proc_macro::TokenStream) -> pro
     }.into()
   }).fold(String::new(), |acc, tokens: TokenStream| format!("{}{}", acc, tokens)).parse().unwrap();
 
-  let output = quote! {
-    mod #mod_ident {
-      pub fn main() {
-        #tokens
-      }
-    }
-  };
-
-  println!("{}", output);
-
-  output.into()
+  tokens
 }
 
 fn open() -> core::EditablePackage {
