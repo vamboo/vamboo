@@ -1,4 +1,5 @@
 #[macro_use] extern crate serde_derive;
 
-pub mod package;
+mod package;
+pub use self::package::*;
 
