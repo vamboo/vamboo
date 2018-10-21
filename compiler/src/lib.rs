@@ -1,7 +1,12 @@
+use std::hash::{Hash, Hasher};
+use std::collections::hash_map::DefaultHasher;
+use std::collections::HashMap;
+
 extern crate proc_macro;
 use crate::proc_macro::TokenStream;
 
-use std::collections::{hash_map, HashMap};
+extern crate proc_macro2;
+use proc_macro2::{Ident, Span};
 
 extern crate syn;
 #[macro_use] extern crate quote;
@@ -12,10 +17,11 @@ use uuid::Uuid;
 extern crate petgraph;
 use petgraph::Graph;
 use petgraph::graph::NodeIndex;
-
-extern crate core;
+use petgraph::algo::toposort;
 
 extern crate serde_json;
+
+extern crate core;
 
 #[proc_macro_attribute]
 pub fn inject(_: TokenStream, input: TokenStream) -> TokenStream {
@@ -26,13 +32,43 @@ pub fn inject(_: TokenStream, input: TokenStream) -> TokenStream {
     _ => panic!("expects struct")
   };
 
+  let mut editable_package = open();
+  let main = editable_package.function_definitions.pop().unwrap();
+  let calculation_graph = construct_calculation_graph(main);
+  let mut node_ids = toposort(&calculation_graph, None).expect("infinite recursion detected");
+
+  let return_node_id = node_ids.drain(0..1).next().unwrap();
+  let return_node = calculation_graph.node_weight(return_node_id).unwrap();
+
+  let tokens: proc_macro2::TokenStream = node_ids.into_iter().rev().map(|node_id| {
+    match calculation_graph.node_weight(node_id).unwrap() {
+      CalculationGraphNode::Call(function_definition_id) => {
+        let mut hasher = DefaultHasher::new();
+        function_definition_id.hash(&mut hasher);
+        let function_name = format!("function{}", hasher.finish());
+        let function_ident = Ident::new(&function_name, Span::call_site());;
+
+        let result_name = format!("call{}", node_id.index());
+        let result_ident = Ident::new(&result_name, Span::call_site());
+
+        quote! {
+          let #result_ident = #function_ident();
+        }
+      },
+      CalculationGraphNode::Argument => quote!{},
+      CalculationGraphNode::Return => panic!("toposort went wrong")
+    }.into()
+  }).fold(String::new(), |acc, tokens: proc_macro2::TokenStream| format!("{}{}", acc, tokens)).parse().unwrap();
+
   let output = quote! {
     impl #struct_name {
-      fn new() -> #struct_name {
-        #struct_name {}
+      fn main() {
+        #tokens
       }
     }
   };
+
+  println!("{}{}", input.clone(), output.clone());
 
   format!("{}{}", input, output).parse().unwrap()
 }
@@ -51,7 +87,7 @@ struct CalculationGraphEdge {
   with: String
 }
 
-#[derive(PartialEq, Eq, Hash, Clone)]
+#[derive(PartialEq, Eq, Hash, Clone, Debug)]
 enum CalculationGraphNode {
   Argument,
   Return,
@@ -116,35 +152,3 @@ fn construct_calculation_graph(definition: core::FunctionDefinition)
 
   calculation_graph
 }
-
-//impl From<core::FunctionDefinition> for Graph<CalculationGraphNode, ()> {
-//  fn from(definition: core::FunctionDefinition) -> Self {
-//    let mut node_ids: HashMap<Uuid, NodeIndex> = HashMap::new();
-//    let mut calculation_graph = Graph::new();
-//
-//    for call in definition.implementation.iter() {
-//      let node_id = calculation_graph.add_node(call.clone());
-//      node_ids.insert(call.id, node_id);
-//    }
-//
-//    for call in definition.implementation {
-//      for substitution in call.argument_substitutions {
-//        match substitution.with {
-//          core::SubstituteWith::Argument { of_function, with_argument: _ } => {
-//            assert_eq!(call.call, of_function);
-//
-//
-//          },
-//          core::SubstituteWith::Return { of_call, with_return: _, of_function: _ } => {
-//            let node_id = node_ids.get(&call.id).unwrap();
-//            let depends_on = node_ids.get(&of_call).unwrap();
-//            calculation_graph.add_edge(*node_id, *depends_on, ());
-//          },
-//          _ => unimplemented!()
-//        }
-//      }
-//    }
-//
-//    calculation_graph
-//  }
-// }
