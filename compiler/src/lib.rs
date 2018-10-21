@@ -17,6 +17,7 @@ extern crate petgraph;
 use petgraph::Graph;
 use petgraph::graph::NodeIndex;
 use petgraph::algo::toposort;
+use petgraph::visit::EdgeRef;
 
 extern crate serde_json;
 
@@ -49,13 +50,39 @@ pub fn inject(_: proc_macro::TokenStream, input: proc_macro::TokenStream) -> pro
 
 fn compile(mut editable_package: core::EditablePackage) -> TokenStream {
   let main = editable_package.function_definitions.pop().unwrap();
-  let calculation_graph = construct_calculation_graph(main);
+  let calculation_graph = construct_calculation_graph(&main);
   let mut node_ids = toposort(&calculation_graph, None).expect("infinite recursion detected");
 
-  let return_node_id = node_ids.drain(0..1).next().unwrap();
-  let return_node = calculation_graph.node_weight(return_node_id).unwrap();
+  let mut reversed_lines: Vec<TokenStream> = Vec::with_capacity(128);
 
-  let tokens: TokenStream = node_ids.into_iter().rev().map(|node_id| {
+  let return_node_id = node_ids.drain(0..1).next().unwrap();
+  let fields: TokenStream = calculation_graph.edges(return_node_id).map(|edge| {
+    let dst_return_name = &edge.weight().substitute;
+    let dst_return_ident = Ident::new(&dst_return_name, Span::call_site());
+
+    let call_name = format!("call{}", &edge.target().index());
+    let call_ident = Ident::new(&call_name, Span::call_site());
+
+    let src_return_name = &edge.weight().with;
+    let src_return_ident = Ident::new(&src_return_name, Span::call_site());
+
+    (quote! {
+      #dst_return_ident: #call_ident.#src_return_ident,
+    }).into()
+  }).fold(String::new(), |acc, tokens: TokenStream| format!("{}{}", acc, tokens)).parse().unwrap();
+
+  let mut hasher = DefaultHasher::new();
+  core::FunctionDefinitionId { package: editable_package.id, function: main.name }.hash(&mut hasher);
+  let return_struct_name = format!("Return{}", hasher.finish());
+  let return_struct_ident = Ident::new(&return_struct_name, Span::call_site());
+  let return_tokens = quote! {
+    #return_struct_ident {
+      #fields
+    }
+  };
+  reversed_lines.push(return_tokens);
+
+  let call_tokens: TokenStream = node_ids.into_iter().rev().map(|node_id| {
     match calculation_graph.node_weight(node_id).unwrap() {
       CalculationGraphNode::Call(function_definition_id) => {
         let mut hasher = DefaultHasher::new();
@@ -74,8 +101,13 @@ fn compile(mut editable_package: core::EditablePackage) -> TokenStream {
       CalculationGraphNode::Return => panic!("toposort went wrong")
     }.into()
   }).fold(String::new(), |acc, tokens: TokenStream| format!("{}{}", acc, tokens)).parse().unwrap();
+  reversed_lines.push(call_tokens);
 
-  tokens
+  reversed_lines
+  .into_iter()
+  .fold(String::new(), |acc, tokens: TokenStream| format!("{}{}", tokens, acc))
+  .parse()
+  .unwrap()
 }
 
 fn open() -> core::EditablePackage {
@@ -100,7 +132,7 @@ enum CalculationGraphNode {
   // TODO: Constant()
 }
 
-fn construct_calculation_graph(definition: core::FunctionDefinition)
+fn construct_calculation_graph(definition: &core::FunctionDefinition)
 -> Graph<CalculationGraphNode, CalculationGraphEdge> {
   let mut call_node_ids: HashMap<Uuid, NodeIndex> = HashMap::new();
   let mut calculation_graph = Graph::new();
@@ -113,7 +145,7 @@ fn construct_calculation_graph(definition: core::FunctionDefinition)
     call_node_ids.insert(call.id, node_id);
   }
 
-  for substitution in definition.return_substitutions {
+  for substitution in definition.return_substitutions.iter().cloned() {
     match substitution.with {
       core::SubstituteWith::Argument { with_argument, of_function: _ } => {
         calculation_graph.add_edge(return_node_id, argument_node_id, CalculationGraphEdge {
@@ -132,7 +164,7 @@ fn construct_calculation_graph(definition: core::FunctionDefinition)
     }
   }
 
-  for call in definition.implementation {
+  for call in definition.implementation.iter().cloned() {
     for substitution in call.argument_substitutions {
       let node_id = call_node_ids.get(&call.id).unwrap();
 
