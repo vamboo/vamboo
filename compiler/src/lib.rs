@@ -3,10 +3,9 @@ use std::collections::hash_map::DefaultHasher;
 use std::collections::HashMap;
 
 extern crate proc_macro;
-use crate::proc_macro::TokenStream;
 
 extern crate proc_macro2;
-use proc_macro2::{Ident, Span};
+use proc_macro2::{TokenStream, Ident, Span};
 
 extern crate syn;
 #[macro_use] extern crate quote;
@@ -24,7 +23,7 @@ extern crate serde_json;
 extern crate core;
 
 #[proc_macro_attribute]
-pub fn inject(_: TokenStream, input: TokenStream) -> TokenStream {
+pub fn inject(_: proc_macro::TokenStream, input: proc_macro::TokenStream) -> proc_macro::TokenStream {
   let item = syn::parse(input.clone()).expect("failed to parse");
 
   let mod_ident = match item {
@@ -36,11 +35,11 @@ pub fn inject(_: TokenStream, input: TokenStream) -> TokenStream {
   let main = editable_package.function_definitions.pop().unwrap();
   let calculation_graph = construct_calculation_graph(main);
   let mut node_ids = toposort(&calculation_graph, None).expect("infinite recursion detected");
-
+  
   let return_node_id = node_ids.drain(0..1).next().unwrap();
   let return_node = calculation_graph.node_weight(return_node_id).unwrap();
 
-  let tokens: proc_macro2::TokenStream = node_ids.into_iter().rev().map(|node_id| {
+  let tokens: TokenStream = node_ids.into_iter().rev().map(|node_id| {
     match calculation_graph.node_weight(node_id).unwrap() {
       CalculationGraphNode::Call(function_definition_id) => {
         let mut hasher = DefaultHasher::new();
@@ -58,7 +57,7 @@ pub fn inject(_: TokenStream, input: TokenStream) -> TokenStream {
       CalculationGraphNode::Argument => quote!{},
       CalculationGraphNode::Return => panic!("toposort went wrong")
     }.into()
-  }).fold(String::new(), |acc, tokens: proc_macro2::TokenStream| format!("{}{}", acc, tokens)).parse().unwrap();
+  }).fold(String::new(), |acc, tokens: TokenStream| format!("{}{}", acc, tokens)).parse().unwrap();
 
   let output = quote! {
     mod #mod_ident {
