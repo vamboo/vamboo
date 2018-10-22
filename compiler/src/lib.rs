@@ -47,7 +47,7 @@ pub fn inject(_: proc_macro::TokenStream, input: proc_macro::TokenStream) -> pro
 fn compile(editable_package: &core::EditablePackage) -> TokenStream {
   editable_package.function_definitions.iter().enumerate().map(|(index, _)| {
     compile_function(editable_package, index)
-  }).fold(String::new(), |acc, tokens| format!("{}{}", acc, tokens)).parse().unwrap()
+  }).collect()
 }
 
 fn compile_function(editable_package: &core::EditablePackage, index: usize) -> TokenStream {
@@ -82,7 +82,7 @@ fn compile_return(
   calculation_graph: &Graph<CalculationGraphNode, CalculationGraphEdge>,
   return_node_id: NodeIndex
 ) -> TokenStream {
-  let fields: TokenStream = calculation_graph.edges(return_node_id).map(|edge| {
+  let fields: TokenStream = calculation_graph.edges(return_node_id).map(|edge| -> TokenStream {
     // I don't know why & is needed here
     let dst_return_name = &edge.weight().substitute;
     let dst_return_ident = Ident::new(&dst_return_name, Span::call_site());
@@ -95,8 +95,8 @@ fn compile_return(
 
     (quote! {
       #dst_return_ident: #call_ident.#src_return_ident,
-    }).into()
-  }).fold(String::new(), |acc, tokens: TokenStream| format!("{}{}", acc, tokens)).parse().unwrap();
+    })
+  }).collect();
 
   let return_struct_name = format!("Return_{}", function.name);
   let return_struct_ident = Ident::new(&return_struct_name, Span::call_site());
@@ -112,7 +112,7 @@ fn compile_calls(
   calculation_graph: &Graph<CalculationGraphNode, CalculationGraphEdge>,
   node_ids: Vec<NodeIndex>
 ) -> TokenStream {
-  node_ids.into_iter().map(|node_id| {
+  node_ids.into_iter().map(|node_id| -> TokenStream {
     match calculation_graph.node_weight(node_id).unwrap() {
       CalculationGraphNode::Call(function_definition_id) => {
         let function_name = format!("{}", function_definition_id.function);
@@ -129,8 +129,8 @@ fn compile_calls(
       },
       CalculationGraphNode::Argument => quote!{},
       CalculationGraphNode::Return => panic!("toposort went wrong")
-    }.into()
-  }).fold(String::new(), |acc, tokens: TokenStream| format!("{}{}", acc, tokens)).parse().unwrap()
+    }
+  }).collect()
 }
 
 fn compile_argument(
@@ -145,7 +145,7 @@ fn compile_argument(
   let argument_struct_name = format!("Argument_{}", function_name);
   let argument_struct_ident = Ident::new(&argument_struct_name, Span::call_site());
 
-  let argument_struct_fields: TokenStream = calculation_graph.edges(node_id).map(|edge| {
+  let argument_struct_fields: TokenStream = calculation_graph.edges(node_id).map(|edge| -> TokenStream {
     // TODO: Better naming
     let substitution_ident = match calculation_graph.node_weight(edge.target()).unwrap() {
       CalculationGraphNode::Argument => Ident::new("argument", Span::call_site()),
@@ -165,8 +165,8 @@ fn compile_argument(
 
     (quote! {
       #argument_ident: #substitution_ident.#substitute_with_ident,
-    }).into()
-  }).fold(String::new(), |acc, tokens: TokenStream| format!("{}{}", acc, tokens)).parse().unwrap();
+    })
+  }).collect();
 
   (quote! {
     #argument_struct_ident {
