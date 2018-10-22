@@ -1,25 +1,12 @@
-use std::collections::HashMap;
-
 extern crate proc_macro;
-
-extern crate proc_macro2;
-use proc_macro2::{TokenStream, Ident, Span};
-
-extern crate syn;
 #[macro_use] extern crate quote;
-
-extern crate uuid;
+use std::collections::HashMap;
+use proc_macro2::{TokenStream, Ident, Span};
 use uuid::Uuid;
-
-extern crate petgraph;
 use petgraph::Graph;
 use petgraph::graph::NodeIndex;
 use petgraph::algo::toposort;
 use petgraph::visit::EdgeRef;
-
-extern crate serde_json;
-
-extern crate core;
 
 #[proc_macro_attribute]
 pub fn inject(_: proc_macro::TokenStream, input: proc_macro::TokenStream) -> proc_macro::TokenStream {

@@ -1,18 +1,10 @@
 use std::fmt;
 use std::str::FromStr;
 use std::hash::{Hash, Hasher};
-
-extern crate serde;
 use serde::ser::{Serialize, Serializer};
 use serde::de::{Deserialize, Deserializer, Visitor};
-
-extern crate failure;
 use failure::format_err;
-
-extern crate uuid;
 use uuid::Uuid;
-
-extern crate serde_json;
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub enum PackageId {
