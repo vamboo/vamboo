@@ -58,10 +58,10 @@ fn compile_function(editable_package: &core::EditablePackage, index: usize) -> T
   let mut node_ids = toposort(&calculation_graph, None).expect("infinite recursion detected");
 
   let return_node_id = node_ids.drain(0..1).next().unwrap();
-  let return_tokens = compile_return(editable_package, function, &calculation_graph, return_node_id);
+  let return_tokens = compile_return(function, &calculation_graph, return_node_id);
 
   node_ids.reverse();
-  let call_tokens = compile_calls(function, &calculation_graph, node_ids);
+  let call_tokens = compile_calls(&calculation_graph, node_ids);
 
   let function_ident = Ident::new(&function.name, Span::call_site());
 
@@ -74,7 +74,6 @@ fn compile_function(editable_package: &core::EditablePackage, index: usize) -> T
 }
 
 fn compile_return(
-  editable_package: &core::EditablePackage,
   function: &core::FunctionDefinition,
   calculation_graph: &Graph<CalculationGraphNode, CalculationGraphEdge>,
   return_node_id: NodeIndex
@@ -95,12 +94,7 @@ fn compile_return(
     }).into()
   }).fold(String::new(), |acc, tokens: TokenStream| format!("{}{}", acc, tokens)).parse().unwrap();
 
-  let mut hasher = DefaultHasher::new();
-  core::FunctionDefinitionId {
-    package: editable_package.id.clone(),
-    function: function.name.clone()
-  }.hash(&mut hasher);
-  let return_struct_name = format!("Return{}", hasher.finish());
+  let return_struct_name = format!("Return_{}", function.name);
   let return_struct_ident = Ident::new(&return_struct_name, Span::call_site());
 
   (quote! {
@@ -111,16 +105,13 @@ fn compile_return(
 }
 
 fn compile_calls(
-  function: &core::FunctionDefinition,
   calculation_graph: &Graph<CalculationGraphNode, CalculationGraphEdge>,
   node_ids: Vec<NodeIndex>
 ) -> TokenStream {
-  node_ids.into_iter().rev().map(|node_id| {
+  node_ids.into_iter().map(|node_id| {
     match calculation_graph.node_weight(node_id).unwrap() {
       CalculationGraphNode::Call(function_definition_id) => {
-        let mut hasher = DefaultHasher::new();
-        function_definition_id.hash(&mut hasher);
-        let function_name = format!("function{}", hasher.finish());
+        let function_name = format!("{}", function_definition_id.function);
         let function_ident = Ident::new(&function_name, Span::call_site());;
 
         let result_name = format!("call{}", node_id.index());

@@ -7,5 +7,5 @@ pub mod stream;
 mod executable_package {}
 
 fn main() {
-  executable_package::main()
+  executable_package::double(())
 }
