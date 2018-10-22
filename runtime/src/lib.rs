@@ -4,8 +4,8 @@ extern crate compiler;
 pub mod stream;
 
 #[compiler::inject]
-mod executable_package {}
+mod compiled {}
 
 fn main() {
-  executable_package::double(())
+  compiled::double(())
 }

@@ -24,17 +24,16 @@ extern crate core;
 #[proc_macro_attribute]
 pub fn inject(_: proc_macro::TokenStream, input: proc_macro::TokenStream) -> proc_macro::TokenStream {
   let item = syn::parse(input.clone()).expect("failed to parse");
-
-  let mod_ident = match item {
-    syn::Item::Mod(item) => item.ident,
-    _ => panic!("expects struct")
+  match item {
+    syn::Item::Mod(ref item) if item.ident.to_string().as_str() == "compiled" => (),
+    _ => panic!("compiler::inject only can be applied to module named compiled")
   };
 
   let editable_package = open();
   let functions = compile(&editable_package);
 
   let output = quote! {
-    mod #mod_ident {
+    mod compiled {
       #functions
     }
   };
@@ -52,22 +51,28 @@ fn compile(editable_package: &core::EditablePackage) -> TokenStream {
 
 fn compile_function(editable_package: &core::EditablePackage, index: usize) -> TokenStream {
   let function = &editable_package.function_definitions[index];
+  let function_definition_id = core::FunctionDefinitionId {
+    package: editable_package.id.clone(),
+    function: function.name.clone()
+  };
   let calculation_graph = construct_calculation_graph(function);
   let mut node_ids = toposort(&calculation_graph, None).expect("infinite recursion detected");
 
   let return_node_id = node_ids.drain(0..1).next().unwrap();
-  let return_tokens = compile_return(function, &calculation_graph, return_node_id);
+  let return_tokens = compile_return(editable_package, function, &calculation_graph, return_node_id);
 
   node_ids.reverse();
   let call_tokens = compile_calls(&calculation_graph, node_ids);
 
   let function_ident = Ident::new(&function.name, Span::call_site());
-
-  let argument_name = format!("Argument_{}", function.name);
-  let argument_ident = Ident::new(&argument_name, Span::call_site());
-
-  let return_name = format!("Return_{}", function.name);
-  let return_ident = Ident::new(&return_name, Span::call_site());
+  let argument_ident: TokenStream = vec![
+    compile_module_specifier(&function_definition_id),
+    quote!(::Argument)
+  ].into_iter().collect();
+  let return_ident: TokenStream = vec![
+    compile_module_specifier(&function_definition_id),
+    quote!(::Return)
+  ].into_iter().collect();
 
   (quote! {
     pub fn #function_ident(argument: #argument_ident) -> #return_ident {
@@ -78,6 +83,7 @@ fn compile_function(editable_package: &core::EditablePackage, index: usize) -> T
 }
 
 fn compile_return(
+  editable_package: &core::EditablePackage,
   function: &core::FunctionDefinition,
   calculation_graph: &Graph<CalculationGraphNode, CalculationGraphEdge>,
   return_node_id: NodeIndex
@@ -98,8 +104,13 @@ fn compile_return(
     })
   }).collect();
 
-  let return_struct_name = format!("Return_{}", function.name);
-  let return_struct_ident = Ident::new(&return_struct_name, Span::call_site());
+  let return_struct_ident: TokenStream = vec![
+    compile_module_specifier(&core::FunctionDefinitionId {
+      package: editable_package.id.clone(),
+      function: function.name.clone()
+    }),
+    quote!(::Return)
+  ].into_iter().collect();
 
   (quote! {
     #return_struct_ident {
@@ -115,13 +126,15 @@ fn compile_calls(
   node_ids.into_iter().map(|node_id| -> TokenStream {
     match calculation_graph.node_weight(node_id).unwrap() {
       CalculationGraphNode::Call(function_definition_id) => {
-        let function_name = format!("{}", function_definition_id.function);
-        let function_ident = Ident::new(&function_name, Span::call_site());;
+        let function_ident: TokenStream = vec![
+          compile_module_specifier(function_definition_id),
+          quote!(::call)
+        ].into_iter().collect();
 
         let result_name = format!("call{}", node_id.index());
         let result_ident = Ident::new(&result_name, Span::call_site());
 
-        let argument = compile_argument(&calculation_graph, node_id);
+        let argument = compile_argument(function_definition_id, &calculation_graph, node_id);
 
         quote! {
           let #result_ident = #function_ident(#argument);
@@ -134,16 +147,14 @@ fn compile_calls(
 }
 
 fn compile_argument(
+  function_definition_id: &core::FunctionDefinitionId,
   calculation_graph: &Graph<CalculationGraphNode, CalculationGraphEdge>,
   node_id: NodeIndex
 ) -> TokenStream {
-  let function_name = match calculation_graph.node_weight(node_id).unwrap() {
-    CalculationGraphNode::Call(function_definition_id) => &function_definition_id.function,
-    _ => panic!()
-  };
-
-  let argument_struct_name = format!("Argument_{}", function_name);
-  let argument_struct_ident = Ident::new(&argument_struct_name, Span::call_site());
+  let argument_struct_ident: TokenStream = vec![
+    compile_module_specifier(function_definition_id),
+    quote!(::Argument)
+  ].into_iter().collect();
 
   let argument_struct_fields: TokenStream = calculation_graph.edges(node_id).map(|edge| -> TokenStream {
     // TODO: Better naming
@@ -173,6 +184,17 @@ fn compile_argument(
       #argument_struct_fields
     }
   }).into()
+}
+
+fn compile_module_specifier(function_definition_id: &core::FunctionDefinitionId) -> TokenStream {
+  std::iter::once(quote!(crate::compiled))
+  .chain(function_definition_id.to_string().split(".").map(|segment| {
+    let segment_ident = Ident::new(segment, Span::call_site());
+    quote! {
+      ::#segment_ident
+    }
+  }))
+  .collect()
 }
 
 fn open() -> core::EditablePackage {
