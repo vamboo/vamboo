@@ -63,8 +63,14 @@ fn compile_function(editable_package: &core::EditablePackage, index: usize) -> T
 
   let function_ident = Ident::new(&function.name, Span::call_site());
 
+  let argument_name = format!("Argument_{}", function.name);
+  let argument_ident = Ident::new(&argument_name, Span::call_site());
+
+  let return_name = format!("Return_{}", function.name);
+  let return_ident = Ident::new(&return_name, Span::call_site());
+
   (quote! {
-    pub fn #function_ident(argument: ()) -> () {
+    pub fn #function_ident(argument: #argument_ident) -> #return_ident {
       #call_tokens
       #return_tokens
     }
