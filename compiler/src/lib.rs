@@ -115,14 +115,58 @@ fn compile_calls(
         let result_name = format!("call{}", node_id.index());
         let result_ident = Ident::new(&result_name, Span::call_site());
 
+        let argument = compile_argument(&calculation_graph, node_id);
+
         quote! {
-          let #result_ident = #function_ident();
+          let #result_ident = #function_ident(#argument);
         }
       },
       CalculationGraphNode::Argument => quote!{},
       CalculationGraphNode::Return => panic!("toposort went wrong")
     }.into()
   }).fold(String::new(), |acc, tokens: TokenStream| format!("{}{}", acc, tokens)).parse().unwrap()
+}
+
+fn compile_argument(
+  calculation_graph: &Graph<CalculationGraphNode, CalculationGraphEdge>,
+  node_id: NodeIndex
+) -> TokenStream {
+  let function_name = match calculation_graph.node_weight(node_id).unwrap() {
+    CalculationGraphNode::Call(function_definition_id) => &function_definition_id.function,
+    _ => panic!()
+  };
+
+  let argument_struct_name = format!("Argument_{}", function_name);
+  let argument_struct_ident = Ident::new(&argument_struct_name, Span::call_site());
+
+  let argument_struct_fields: TokenStream = calculation_graph.edges(node_id).map(|edge| {
+    // TODO: Better naming
+    let substitution_ident = match calculation_graph.node_weight(edge.target()).unwrap() {
+      CalculationGraphNode::Argument => Ident::new("argument", Span::call_site()),
+      CalculationGraphNode::Call(_) => {
+        // TODO: DRY
+        let substitution_name = format!("call{}", edge.target().index());
+        Ident::new(&substitution_name, Span::call_site())
+      },
+      CalculationGraphNode::Return => panic!()
+    };
+
+    let argument_name = &edge.weight().substitute;
+    let argument_ident = Ident::new(&argument_name, Span::call_site());
+
+    let substitute_with = &edge.weight().with;
+    let substitute_with_ident = Ident::new(&substitute_with, Span::call_site());
+
+    (quote! {
+      #argument_ident: #substitution_ident.#substitute_with_ident,
+    }).into()
+  }).fold(String::new(), |acc, tokens: TokenStream| format!("{}{}", acc, tokens)).parse().unwrap();
+
+  (quote! {
+    #argument_struct_ident {
+      #argument_struct_fields
+    }
+  }).into()
 }
 
 fn open() -> core::EditablePackage {
