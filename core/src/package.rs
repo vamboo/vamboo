@@ -1,6 +1,5 @@
 use std::fmt;
 use std::str::FromStr;
-use std::collections::HashMap;
 use std::hash::{Hash, Hasher};
 
 extern crate serde;
@@ -12,10 +11,6 @@ use failure::format_err;
 
 extern crate uuid;
 use uuid::Uuid;
-
-extern crate petgraph;
-use petgraph::Graph;
-use petgraph::graph::NodeIndex;
 
 extern crate serde_json;
 
