@@ -147,7 +147,7 @@ pub struct EditablePackage {
   pub function_definitions: Vec<FunctionDefinition>
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Clone)]
 pub struct FunctionDefinition {
   pub name: String,
   pub argument_definitions: Vec<NameTypePair>,
@@ -156,7 +156,7 @@ pub struct FunctionDefinition {
   pub return_substitutions: Vec<Substitution>
 }
 
-#[derive(Serialize, Deserialize, Debug, PartialEq, Eq)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Clone)]
 pub struct NameTypePair {
   pub name: String,
   pub type_tag: TypeTag

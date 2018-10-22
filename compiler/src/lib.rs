@@ -31,33 +31,28 @@ pub fn inject(_: proc_macro::TokenStream, input: proc_macro::TokenStream) -> pro
 }
 
 fn compile(editable_package: &core::EditablePackage) -> TokenStream {
-  editable_package.function_definitions.iter().enumerate().map(|(index, _)| {
-    compile_function(editable_package, index)
-  }).collect()
+  (0..editable_package.function_definitions.len()).map(|i|
+    compile_function(get_function(editable_package, i))
+  ).collect()
 }
 
-fn compile_function(editable_package: &core::EditablePackage, index: usize) -> TokenStream {
-  let function = &editable_package.function_definitions[index];
-  let function_definition_id = core::FunctionDefinitionId {
-    package: editable_package.id.clone(),
-    function: function.name.clone()
-  };
-  let calculation_graph = construct_calculation_graph(function);
+fn compile_function(function: Function) -> TokenStream {
+  let calculation_graph = construct_calculation_graph(&function);
   let mut node_ids = toposort(&calculation_graph, None).expect("infinite recursion detected");
 
   let return_node_id = node_ids.drain(0..1).next().unwrap();
-  let return_tokens = compile_return(editable_package, function, &calculation_graph, return_node_id);
+  let return_tokens = compile_return(&function, &calculation_graph, return_node_id);
 
   node_ids.reverse();
   let call_tokens = compile_calls(&calculation_graph, node_ids);
 
-  let function_ident = Ident::new(&function.name, Span::call_site());
+  let function_ident = Ident::new(&function.id.function, Span::call_site());
   let argument_ident: TokenStream = vec![
-    compile_module_specifier(&function_definition_id),
+    compile_module_specifier(&function.id),
     quote!(::Argument)
   ].into_iter().collect();
   let return_ident: TokenStream = vec![
-    compile_module_specifier(&function_definition_id),
+    compile_module_specifier(&function.id),
     quote!(::Return)
   ].into_iter().collect();
 
@@ -70,8 +65,7 @@ fn compile_function(editable_package: &core::EditablePackage, index: usize) -> T
 }
 
 fn compile_return(
-  editable_package: &core::EditablePackage,
-  function: &core::FunctionDefinition,
+  function: &Function,
   calculation_graph: &Graph<CalculationGraphNode, CalculationGraphEdge>,
   return_node_id: NodeIndex
 ) -> TokenStream {
@@ -92,10 +86,7 @@ fn compile_return(
   }).collect();
 
   let return_struct_ident: TokenStream = vec![
-    compile_module_specifier(&core::FunctionDefinitionId {
-      package: editable_package.id.clone(),
-      function: function.name.clone()
-    }),
+    compile_module_specifier(&function.id),
     quote!(::Return)
   ].into_iter().collect();
 
@@ -206,7 +197,7 @@ enum CalculationGraphNode {
   // TODO: Constant()
 }
 
-fn construct_calculation_graph(definition: &core::FunctionDefinition)
+fn construct_calculation_graph(function: &Function)
 -> Graph<CalculationGraphNode, CalculationGraphEdge> {
   let mut call_node_ids: HashMap<Uuid, NodeIndex> = HashMap::new();
   let mut calculation_graph = Graph::new();
@@ -214,12 +205,12 @@ fn construct_calculation_graph(definition: &core::FunctionDefinition)
   let argument_node_id = calculation_graph.add_node(CalculationGraphNode::Argument);
   let return_node_id = calculation_graph.add_node(CalculationGraphNode::Return);
 
-  for call in definition.implementation.iter().cloned() {
+  for call in function.implementation.iter().cloned() {
     let node_id = calculation_graph.add_node(CalculationGraphNode::Call(call.call));
     call_node_ids.insert(call.id, node_id);
   }
 
-  for substitution in definition.return_substitutions.iter().cloned() {
+  for substitution in function.return_substitutions.iter().cloned() {
     match substitution.with {
       core::SubstituteWith::Argument { with_argument, of_function: _ } => {
         calculation_graph.add_edge(return_node_id, argument_node_id, CalculationGraphEdge {
@@ -238,7 +229,7 @@ fn construct_calculation_graph(definition: &core::FunctionDefinition)
     }
   }
 
-  for call in definition.implementation.iter().cloned() {
+  for call in function.implementation.iter().cloned() {
     for substitution in call.argument_substitutions {
       let node_id = call_node_ids.get(&call.id).unwrap();
 
@@ -262,4 +253,26 @@ fn construct_calculation_graph(definition: &core::FunctionDefinition)
   }
 
   calculation_graph
+}
+
+struct Function {
+  id: core::FunctionDefinitionId,
+  argument_definitions: Vec<core::NameTypePair>,
+  return_definitions: Vec<core::NameTypePair>,
+  implementation: Vec<core::FunctionCall>,
+  return_substitutions: Vec<core::Substitution>
+}
+
+fn get_function(editable_package: &core::EditablePackage, index: usize) -> Function {
+  let function_definition: core::FunctionDefinition = (&editable_package.function_definitions[index]).clone();
+  Function {
+    id: core::FunctionDefinitionId {
+      package: editable_package.id.clone(),
+      function: function_definition.name
+    },
+    argument_definitions: function_definition.argument_definitions,
+    return_definitions: function_definition.return_definitions,
+    implementation: function_definition.implementation,
+    return_substitutions: function_definition.return_substitutions
+  }
 }
