@@ -33,13 +33,11 @@ pub fn inject(_: proc_macro::TokenStream, input: proc_macro::TokenStream) -> pro
   };
 
   let editable_package = open();
-  let tokens = compile(editable_package);
+  let functions = compile(&editable_package);
 
   let output = quote! {
     mod #mod_ident {
-      pub fn main() {
-        #tokens
-      }
+      #functions
     }
   };
 
@@ -48,15 +46,41 @@ pub fn inject(_: proc_macro::TokenStream, input: proc_macro::TokenStream) -> pro
   output.into()
 }
 
-fn compile(mut editable_package: core::EditablePackage) -> TokenStream {
-  let main = editable_package.function_definitions.pop().unwrap();
-  let calculation_graph = construct_calculation_graph(&main);
+fn compile(editable_package: &core::EditablePackage) -> TokenStream {
+  editable_package.function_definitions.iter().enumerate().map(|(index, _)| {
+    compile_function(editable_package, index)
+  }).fold(String::new(), |acc, tokens| format!("{}{}", acc, tokens)).parse().unwrap()
+}
+
+fn compile_function(editable_package: &core::EditablePackage, index: usize) -> TokenStream {
+  let function = &editable_package.function_definitions[index];
+  let calculation_graph = construct_calculation_graph(function);
   let mut node_ids = toposort(&calculation_graph, None).expect("infinite recursion detected");
 
-  let mut reversed_lines: Vec<TokenStream> = Vec::with_capacity(128);
-
   let return_node_id = node_ids.drain(0..1).next().unwrap();
+  let return_tokens = compile_return(editable_package, function, &calculation_graph, return_node_id);
+
+  node_ids.reverse();
+  let call_tokens = compile_calls(function, &calculation_graph, node_ids);
+
+  let function_ident = Ident::new(&function.name, Span::call_site());
+
+  (quote! {
+    pub fn #function_ident(argument: ()) -> () {
+      #call_tokens
+      #return_tokens
+    }
+  }).into()
+}
+
+fn compile_return(
+  editable_package: &core::EditablePackage,
+  function: &core::FunctionDefinition,
+  calculation_graph: &Graph<CalculationGraphNode, CalculationGraphEdge>,
+  return_node_id: NodeIndex
+) -> TokenStream {
   let fields: TokenStream = calculation_graph.edges(return_node_id).map(|edge| {
+    // I don't know why & is needed here
     let dst_return_name = &edge.weight().substitute;
     let dst_return_ident = Ident::new(&dst_return_name, Span::call_site());
 
@@ -72,17 +96,26 @@ fn compile(mut editable_package: core::EditablePackage) -> TokenStream {
   }).fold(String::new(), |acc, tokens: TokenStream| format!("{}{}", acc, tokens)).parse().unwrap();
 
   let mut hasher = DefaultHasher::new();
-  core::FunctionDefinitionId { package: editable_package.id, function: main.name }.hash(&mut hasher);
+  core::FunctionDefinitionId {
+    package: editable_package.id.clone(),
+    function: function.name.clone()
+  }.hash(&mut hasher);
   let return_struct_name = format!("Return{}", hasher.finish());
   let return_struct_ident = Ident::new(&return_struct_name, Span::call_site());
-  let return_tokens = quote! {
+
+  (quote! {
     #return_struct_ident {
       #fields
     }
-  };
-  reversed_lines.push(return_tokens);
+  }).into()
+}
 
-  let call_tokens: TokenStream = node_ids.into_iter().rev().map(|node_id| {
+fn compile_calls(
+  function: &core::FunctionDefinition,
+  calculation_graph: &Graph<CalculationGraphNode, CalculationGraphEdge>,
+  node_ids: Vec<NodeIndex>
+) -> TokenStream {
+  node_ids.into_iter().rev().map(|node_id| {
     match calculation_graph.node_weight(node_id).unwrap() {
       CalculationGraphNode::Call(function_definition_id) => {
         let mut hasher = DefaultHasher::new();
@@ -100,14 +133,7 @@ fn compile(mut editable_package: core::EditablePackage) -> TokenStream {
       CalculationGraphNode::Argument => quote!{},
       CalculationGraphNode::Return => panic!("toposort went wrong")
     }.into()
-  }).fold(String::new(), |acc, tokens: TokenStream| format!("{}{}", acc, tokens)).parse().unwrap();
-  reversed_lines.push(call_tokens);
-
-  reversed_lines
-  .into_iter()
-  .fold(String::new(), |acc, tokens: TokenStream| format!("{}{}", tokens, acc))
-  .parse()
-  .unwrap()
+  }).fold(String::new(), |acc, tokens: TokenStream| format!("{}{}", acc, tokens)).parse().unwrap()
 }
 
 fn open() -> core::EditablePackage {
