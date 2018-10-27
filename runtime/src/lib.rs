@@ -24,5 +24,18 @@ mod compiled {
 }
 
 fn main() {
-  compiled::local::example::double(())
+}
+
+#[cfg(test)]
+mod tests {
+  use super::*;
+  use wasm_bindgen_test::*;
+
+  #[wasm_bindgen_test]
+  fn it_works() {
+    let result = compiled::local::example::double::call(compiled::local::example::double::Argument {
+      input: 123
+    });
+    assert_eq!(result.output, 246);
+  }
 }

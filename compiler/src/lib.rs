@@ -55,36 +55,53 @@ fn compile_function(function: Function) -> TokenStream {
   let calculation_graph = construct_calculation_graph(&function);
   let mut node_ids = toposort(&calculation_graph, None).expect("infinite recursion detected");
 
+  let argument_struct_fields = compile_struct_definition_fields(function.argument_definitions);
+  let return_struct_fields = compile_struct_definition_fields(function.return_definitions);
+
   let return_node_id = node_ids.drain(0..1).next().unwrap();
-  let return_tokens = compile_return(&function, &calculation_graph, return_node_id);
+  let return_fields = compile_return_fields(&calculation_graph, return_node_id);
 
   node_ids.reverse();
   let call_tokens = compile_calls(&calculation_graph, node_ids);
 
   let function_ident = Ident::new(&function.id.function, Span::call_site());
-  let argument_ident: TokenStream = vec![
-    compile_module_specifier(&function.id),
-    quote!(::Argument)
-  ].into_iter().collect();
-  let return_ident: TokenStream = vec![
-    compile_module_specifier(&function.id),
-    quote!(::Return)
-  ].into_iter().collect();
 
   (quote! {
-    pub fn #function_ident(argument: #argument_ident) -> #return_ident {
-      #call_tokens
-      #return_tokens
+    pub mod #function_ident {
+      pub struct Argument {
+        #argument_struct_fields
+      }
+
+      pub struct Return {
+        #return_struct_fields
+      }
+
+      pub fn call(argument: Argument) -> Return {
+        #call_tokens
+
+        Return {
+          #return_fields
+        }
+      }
     }
   }).into()
 }
 
-fn compile_return(
-  function: &Function,
+fn compile_struct_definition_fields(target: Vec<core::NameTypePair>) -> TokenStream {
+  target.into_iter().map(|name_type| {
+    let name_ident = Ident::new(&name_type.name, Span::call_site());
+
+    quote! {
+      pub #name_ident: i32
+    }
+  }).collect()
+}
+
+fn compile_return_fields(
   calculation_graph: &Graph<CalculationGraphNode, CalculationGraphEdge>,
   return_node_id: NodeIndex
 ) -> TokenStream {
-  let fields: TokenStream = calculation_graph.edges(return_node_id).map(|edge| -> TokenStream {
+  calculation_graph.edges(return_node_id).map(|edge| -> TokenStream {
     // I don't know why & is needed here
     let dst_return_name = &edge.weight().substitute;
     let dst_return_ident = Ident::new(&dst_return_name, Span::call_site());
@@ -98,18 +115,7 @@ fn compile_return(
     (quote! {
       #dst_return_ident: #call_ident.#src_return_ident,
     })
-  }).collect();
-
-  let return_struct_ident: TokenStream = vec![
-    compile_module_specifier(&function.id),
-    quote!(::Return)
-  ].into_iter().collect();
-
-  (quote! {
-    #return_struct_ident {
-      #fields
-    }
-  }).into()
+  }).collect()
 }
 
 fn compile_calls(
