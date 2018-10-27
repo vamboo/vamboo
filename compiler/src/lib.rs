@@ -1,5 +1,5 @@
 extern crate proc_macro;
-use quote::quote;
+use quote::{quote, ToTokens};
 use std::collections::HashMap;
 use proc_macro2::{TokenStream, Ident, Span};
 use uuid::Uuid;
@@ -11,17 +11,22 @@ use petgraph::visit::EdgeRef;
 #[proc_macro_attribute]
 pub fn inject(_: proc_macro::TokenStream, input: proc_macro::TokenStream) -> proc_macro::TokenStream {
   let item = syn::parse(input.clone()).expect("failed to parse");
-  match item {
-    syn::Item::Mod(ref item) if item.ident.to_string().as_str() == "compiled" => (),
+  let builtin: TokenStream = match item {
+    syn::Item::Mod(ref item) if item.ident.to_string().as_str() == "compiled" =>
+      item.clone().content.expect("there's no built-in functions").1,
     _ => panic!("compiler::inject only can be applied to module named compiled")
-  };
+  }.into_iter().map(|item| item.into_token_stream()).collect();
 
   let editable_package = open();
-  let functions = compile(&editable_package);
+  let compiled_package = compile_package(&editable_package);
 
   let output = quote! {
     mod compiled {
-      #functions
+      #builtin
+
+      pub mod local {
+        #compiled_package
+      }
     }
   };
 
@@ -30,10 +35,20 @@ pub fn inject(_: proc_macro::TokenStream, input: proc_macro::TokenStream) -> pro
   output.into()
 }
 
-fn compile(editable_package: &core::EditablePackage) -> TokenStream {
-  (0..editable_package.function_definitions.len()).map(|i|
-    compile_function(get_function(editable_package, i))
-  ).collect()
+fn compile_package(editable_package: &core::EditablePackage) -> TokenStream {
+  let package_ident = match editable_package.id.clone() {
+    core::PackageId::Local { package } => Ident::new(&package, Span::call_site()),
+    _ => panic!("compiling packages from the market is not supported for now")
+  };
+  let function_modules: TokenStream = (0..editable_package.function_definitions.len()).map(|i|
+    compile_function(get_function(&editable_package, i))
+  ).collect();
+
+  quote! {
+    pub mod #package_ident {
+      #function_modules
+    }
+  }
 }
 
 fn compile_function(function: Function) -> TokenStream {
