@@ -1,5 +1,5 @@
 extern crate proc_macro;
-#[macro_use] extern crate quote;
+use quote::quote;
 use std::collections::HashMap;
 use proc_macro2::{TokenStream, Ident, Span};
 use uuid::Uuid;
