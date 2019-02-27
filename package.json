@@ -2,30 +2,25 @@
   "name": "vamboo",
   "version": "0.1.0",
   "description": "A functional, reactive, and statically-typed visual programming language for web frontend.",
-  "main": "src/main.js",
+  "main": "editor/main.js",
   "scripts": {
     "test": "echo core compiler runtime editor | xargs -n1 wasm-pack test --node",
-    "build": "webpack",
-    "start": "electron dist/main.js"
+    "build": "parcel build editor/index.html --target electron --public-url ./",
+    "start": "electron editor/main.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/vamboo/vamboo.git"
   },
-  "author": "",
-  "license": "MIT",
+  "author": "tock203",
+  "license": "MPL-2.0",
   "bugs": {
     "url": "https://github.com/vamboo/vamboo/issues"
   },
   "homepage": "https://github.com/vamboo/vamboo#readme",
   "devDependencies": {
-    "@babel/core": "^7.0.1",
-    "@babel/preset-env": "^7.0.0",
-    "babel-loader": "^8.0.2",
-    "electron": "^2.0.9",
-    "html-webpack-plugin": "^3.2.0",
-    "rust-native-wasm-loader": "^0.8.1",
-    "webpack": "^4.18.0",
-    "webpack-cli": "^3.1.0"
+    "electron": "^4.0.6",
+    "parcel-bundler": "^1.11.0",
+    "parcel-plugin-wasm.rs": "^1.2.8"
   }
 }
