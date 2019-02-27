@@ -3,6 +3,7 @@ name = "editor"
 version = "0.1.0"
 description = "A visual programming language for web frontend."
 authors = ["tock203 <tick@tock.tech>"]
+license = "MPL-2.0"
 edition = "2018"
 
 [lib]
