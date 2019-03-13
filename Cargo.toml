@@ -1,2 +1,2 @@
 [workspace]
-members = ["core", "compiler", "runtime", "editor"]
+members = ["editor"]
