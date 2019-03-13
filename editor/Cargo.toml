@@ -18,6 +18,7 @@ maybe-owned = "0.3"
 frappe = { git = "https://github.com/darkstalker/frappe", rev = "9e2e4ab500db428579977e80cb777d9d24a75785" }
 frappe-dom = { git = "https://github.com/tock203/frappe-dom", rev = "251fa4f3a02472d6aa420f578b919d55ff9a30bd" }
 maplit = "1.0"
+petgraph = "0.4"
 
 [dependencies.web-sys]
 version = "0.3"
