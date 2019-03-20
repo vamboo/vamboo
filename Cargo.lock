@@ -322,6 +322,7 @@ version = "0.1.0"
 dependencies = [
  "frappe 0.4.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "frappe-dom 0.1.0 (git+https://github.com/tock203/frappe-dom?rev=9f042232dc26e915a305c62150883a2469e5bb59)",
+ "lazy_static 1.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "maplit 1.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "maybe-owned 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "petgraph 0.4.13 (registry+https://github.com/rust-lang/crates.io-index)",
