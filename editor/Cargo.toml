@@ -10,18 +10,18 @@ edition = "2018"
 crate-type = ["cdylib"]
 
 [dev-dependencies]
-wasm-pack = "0.6"
+wasm-pack = "0.7.0"
 
 [dependencies]
-wasm-bindgen = { version = "0.2", features = ["nightly"] }
-maybe-owned = "0.3"
+wasm-bindgen = { version = "0.2.39", features = ["nightly"] }
+maybe-owned = "0.3.2"
 frappe = "0.4.5"
 frappe-dom = { git = "https://github.com/tock203/frappe-dom", rev = "9f042232dc26e915a305c62150883a2469e5bb59" }
 maplit = "1.0"
-petgraph = "0.4"
+petgraph = "0.4.13"
 
 [dependencies.web-sys]
-version = "0.3"
+version = "0.3.16"
 features = [
   'Document',
   'Element',
