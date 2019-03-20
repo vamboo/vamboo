@@ -44,10 +44,10 @@ impl Deref for CallGraph {
 fn function_overview(call_graph: Stream<CallGraph>) -> (Stream<El>, Stream<app::Action>) {
   let mut arguments = EventsSink::new();
   let mut returns = EventsSink::new();
-  let focus_arguments = arguments.events("  click").map(|_: MaybeOwned<MouseEvent>| {
+  let focus_arguments = arguments.events("click").map(|_: MaybeOwned<MouseEvent>| {
     app::Action::Focus(app::Display::RoughConnection(RoughConnection::BeginWith(1.into())))
   });
-  let focus_returns = returns.events("  click").map(|_: MaybeOwned<MouseEvent>| {
+  let focus_returns = returns.events("click").map(|_: MaybeOwned<MouseEvent>| {
     app::Action::Focus(app::Display::RoughConnection(RoughConnection::EndWith(0.into())))
   });
   let action = focus_arguments.merge(&focus_returns);

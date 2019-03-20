@@ -15,8 +15,8 @@ wasm-pack = "0.6"
 [dependencies]
 wasm-bindgen = { version = "0.2", features = ["nightly"] }
 maybe-owned = "0.3"
-frappe = { git = "https://github.com/darkstalker/frappe", rev = "9e2e4ab500db428579977e80cb777d9d24a75785" }
-frappe-dom = { git = "https://github.com/tock203/frappe-dom", rev = "251fa4f3a02472d6aa420f578b919d55ff9a30bd" }
+frappe = "0.4.5"
+frappe-dom = { git = "https://github.com/tock203/frappe-dom", rev = "9f042232dc26e915a305c62150883a2469e5bb59" }
 maplit = "1.0"
 petgraph = "0.4"
 
