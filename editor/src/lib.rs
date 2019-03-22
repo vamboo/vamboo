@@ -192,6 +192,7 @@ margin-right: 0.5em;")
 
 #[wasm_bindgen]
 pub fn main() {
+  console_error_panic_hook::set_once();
   // The first call of with initializes VDOM.
   VDOM.with(|_| {});
 }
